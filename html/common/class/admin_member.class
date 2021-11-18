@@ -1,0 +1,67 @@
+<?
+class member {
+/* DB 접속 정보 */
+    var $host   = 'localhost';  // 데이터베이스 서버 주소
+	var $myUser = 'an';        // 데이터베이스 사용자 ID
+	var $myPw   = '1202';  // 데이터베이스 사용자 PASSWD
+	var $myDb   = 'car_db';    // 데이터베이스 명
+	
+	var $no;
+	var $id;
+	var $email;
+	var $file;
+	var $verify;
+	
+
+/* DB 접속 */
+function table_member() {
+$this->conn = mysqli_connect($this->host,$this->myUser,$this->myPw,$this->myDb);
+
+if (!$this->conn || mysqli_error($this->conn))
+{
+    die ('could not connect');
+}
+
+$this->sql = "SELECT no,
+               id,
+               email,
+               verify			   
+          FROM member 
+	  ORDER BY time asc";
+		
+$this->result = mysqli_query($this->conn, $this->sql);  // 실행
+
+		
+if (mysqli_num_rows($this->result)>0)
+{
+	while($row = mysqli_fetch_assoc($this->result))
+			{
+				$this->no = $row['no'];
+		        $this->id = $row['id'];
+				$this->email = $row['email'];
+				$this->file = $row['file'];
+				$this->verify = $row['verify'];
+				
+				$this->rtn .= "<tr>\n";
+				$this->rtn .= "<td>$this->no</td>\n";
+				$this->rtn .= "<td>$this->id</td>\n";
+				$this->rtn .= "<td>$this->email</td>\n";
+				$this->rtn .= "<td>$this->file</td>\n";
+				$this->rtn .= "<td>$this->verify</td>\n";
+				$this->rtn .= "</tr><br>\n";
+				
+			}
+}
+else
+{
+		     $this->rtn = "테이블에 데이터가 없습니다.";
+}
+		
+		mysqli_close($this->conn);
+		
+		return $this->rtn;
+
+}
+
+}
+?>

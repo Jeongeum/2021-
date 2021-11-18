@@ -1,0 +1,1872 @@
+<?
+/************************************************************
+Author      : CYBERPARK
+Create Date : 2001/06/?
+Modify Date : 2002/08/?
+Subject     : Table관련 모듈
+Input       :
+Ouput       :
+Comment     :
+-------------------------------------------------------------
+수정자      : 최준호
+Modify Date : 2003/10/22
+Subject     : Table관련 모듈(소계부분 업그레이드)
+Comment     :
+-------------------------------------------------------------
+수정자      : 정승원
+Modify Date : 2004/04/15
+Subject     : 다국어 메세지
+Comment     : 멤버 변수 및 타이틀 배열 추가
+************************************************************/
+define('VAR_OS_VER', $_Z['os_ver']);
+
+class table_class
+{
+    /* 엑셀 다운로드 권한 변수 */
+    var $EXCEL_DISABLED  = '';
+    var $EXCEL_VIEW_FLAG = '';
+
+    /* 다국어 환경 변수 */
+    var $env_LANG = 'KR'; // KR:한글(default), EN:영어
+
+    /* 다국어 문자열 */
+    var $lang_str = array(
+        'KR' => array('ALL' => '선 택 [전 체]', 'SELECT' => '선 택', 'EXCEL' => '엑 셀', 'NODATA' => '자료가 없습니다.'), // 한글
+        'EN' => array('ALL' => 'Select [All]', 'SELECT' => 'Select', 'EXCEL' => 'Excel', 'NODATA' => 'No data.')  // 영어
+    );
+
+    var $sort_fg      = 0;   // 옵션 0:Sort x 1:Server Sort 2:Local Sort
+    var $orderby      = 1;   // order by columns
+    var $sort_default = 1;
+    var $asc_desc     = 'A';   // 'A':asc  'D':desc
+    var $sort_color   = 'darkblue';
+
+    /* 테이블 관련 시작 */
+    var $width       = 1004;
+    var $height      = 0;
+    var $border      = 1;
+    var $padding     = 3;
+    var $spacing     = 0;
+    var $bgcolor     = 'transparent';
+    var $table_class = '';
+    var $td_class    = '';                  // stylesheet 형태 class
+    var $tail_append = '';                  // 가변적인 td에 추가될 형태 ( 뒷쪽에 추가 )
+    var $head_append = '';                  // 가변적인 td에 추가될 형태 ( 앞쪽에 추가 )
+    var $div_append  = '';                  // 가변적인 div에 추가될 형태 ( 뒷쪽에 추가 )
+    /* 테이블 관련 끝 */
+
+    /* 타이틀 테이블 관련 시작 */
+    var $twidth    = 1004;                   // 타이틀 테이블의 폭
+    var $theight   = 0;
+    var $talign    = 'left';
+    var $tleft     = 5;
+    var $tborder   = 0;
+    var $tpadding  = 3;
+    var $tspacing  = 0;
+    var $tscript   = '';
+    var $tid       = '';
+    var $tdiv_id   = '';    // header 정보 인쇄하지 않을 경우 (escape), 인쇄할 경우는 변경
+    var $tbgcolor  = 'transparent';
+    var $tclass    = 'div-search';
+    /* 타이틀 테이블 관련 끝 */
+
+    /* TR 단위 및 DIV 단위 관련 시작 */
+    var $table_script = '';
+    var $table_id     = '';
+    var $tr_script    = '';                           // 테이블 TR내의 Script
+    var $tr_align     = "center";
+    var $tr_valign    = '';
+    var $tr_color     = '';
+    var $tr_height    = '';
+    var $div_left     = 0;
+    var $div_height   = 380;
+    var $div_width    = 0;
+    var $div_XYScroll = 0;
+    var $div_overflow = 'scroll';
+    var $div_fg       = 0;
+    var $div_script   = '';    
+    var $scroll_width = 18;    
+    var $scroll_height= 18;
+    /* TR 단위 및 DIV 단위 관련 끝 */
+
+    /* Rect 및 Circle 테이블 관련 시작 */
+    var $rect_left      = 0;
+    var $rect_width     = 1004;                       // Box Table의 Width
+    var $rect_bgcolor   = "white";
+    var $rect_align     = "center";
+    var $circle_width   = 1004;                       // Round Table의 Width
+    var $circle_bgcolor = "#e8e9eb";
+    var $circle_align   = "center";
+    /* Rect 및 Circle 테이블 관련 끝 */
+
+    /* 테이블 관련 기타옵션 시작 */
+    var $bordercolor       = '#CCCCCC';
+    var $border_left_width = 20;
+    var $text_align        = "left";
+
+    var $mouseover  = false;
+    var $OverColor  = '#f9f9f9';
+
+    var $mouseout   = false;
+    var $OutColor   = 'white';
+
+    var $cursor     = "default";
+
+    var $excel_fg      = 0;       // 엑셀 시작 및 끝 구분자
+    var $excel_show_fg = 1;
+    var $excel_bindstr = '';
+    var $excel_data    = "";
+    var $excel_mso     = 0;
+
+    var $subtot_fg  = 0;      // 소계 Clear
+    var $sumtot_fg  = 0;      // 합계 시작 및 끝 구분자
+
+    var $szSumArr   = 0;      // 합계 Array
+    var $subtot     = '';     // 소계값
+    var $sumtot     = '';     // 합계값
+
+    /* 소계 모듈 시작 */
+    var $sub_flag      = 0;      // 소계사용여부
+    var $subBackNm     = '';     // 전단계명칭저장변수 배열
+    var $subtot_col    = 1;      // 소계타이틀에 대한 colspan 수치..
+    var $arrSubTot     = array();     // 소계합계저장변수 배열
+    var $sub_height    = '24';   // 소계height
+    var $sub_align     = 'right';// 소계align
+    var $sub_class     = '';     // 소계class 배열
+    var $sub_title     = '';     // 소계title 배열
+    var $sub_rowcount  = 0;
+    var $sub_arg_count = 0;
+    var $fzCompare     = '';     // 소계를 처리할 컬럼의 문자열
+
+    var $total_width = array();  // 소계-합계에 대한 배열(width값)
+    var $sumtotal    = array();     // 전체합계저장변수 배열
+    var $sum_align   = 'right';
+    var $sum_class   = 'astems-tail';
+    /* 소계 모듈 끝 */
+
+    var $mso_script = " style='mso-number-format:\@'";
+
+    var $dup_fg     = 0;
+    var $dup_sign   = "&nbsp;";
+
+    var $body_cnt     = 0;
+    var $skip_row     = 30;
+    //var $insBreak   = "style='page-break-before:always'";
+    var $insBreak     = "";    // 임의로 페이지 스킵처리를 하지 않는다 (화면 특성이 너무 틀림)
+
+    var $prtExpand_fg = 1;    // 0:사용자정의 1:default 서브 div의 확장인쇄여부
+
+    var $rect_class    = '';    //2018.11.07-ADD-HEM
+    var $rect_id       = '';    //2018.11.07-ADD-HEM
+    var $div_class     = '';    //2018.11.07-ADD-HEM
+
+    var $font          = '';    //2018.11.07-ADD-HEM
+    var $div_tb_width  = 0;     //2020.09.09-ADD-HEM
+    var $div_tb_fg     = 0;     //2020.09.09-ADD-HEM
+    /* 테이블관련 기타옵션 끝 */
+
+    /* 그래프 처리 관련 시작 */
+    var $sGraphTitle   = '';
+    var $szGraphX1     = '';
+    var $szGraphX2     = '';
+    var $szGraphY1     = '';
+    var $szGraphY2     = '';
+    var $szGraphY3     = '';
+    var $nGraphFont    = 9;
+    var $LegendAlign   = 1;
+    var $TopTitleAlign = 2; //타이틀 위치 0 ; 왼쪽 1: 오른쪽 2 : 중앙
+
+    var $bGraphCommand = 0;
+    var $bGraphLegend  = 0; //값을 뿌려 주지 않음.
+    var $nGraphType    = 1;
+    var $nGraphIdx     = 0;
+
+    var $GraphLabel    = 0; //그래프에 X좌표와 화면에 뿌려줄 값 설정 0: Label 1:값
+    var $GraphComp     = 0; //0: 일반 ,1~: 대비기간
+    var $GraphCompTxt  = ''; //대비기간 LABEL
+    var $AspectView3D  = 1; //0: 2D, 1: 3D
+
+    var $LeftLabel     = '';
+    var $BottomLabel   = '';
+
+    var $MarksVisible  = 0;
+
+    var $max_min_auto_fg   = 'true';
+    var $max_value         = '0';
+    var $min_value         = '0';
+    var $max_min_increment = '0';
+    /* 그래프 처리 관련 끝 */
+
+    function reset()          // 전체 reset
+    {
+        $this->width   = 1004;
+        $this->border  = 1;
+        $this->padding = 3;
+        $this->spacing = 0;
+        $this->bgcolor = 'transparent';
+        $this->table_class = '';
+        $this->table_id    = '';
+        $this->bordercolor = '#CCCCCC';
+
+        $this->twidth    = 1004;
+        $this->talign    = 'left';
+        $this->tborder   = 0;
+        $this->tleft     = 5;
+        $this->tpadding  = 3;
+        $this->tspacing  = 0;
+        $this->tscript   = '';
+        $this->tid       = '';
+        $this->tbgcolor  = 'transparent';
+        $this->tclass    = 'div-search';
+
+        $this->tr_color  = '';
+        $this->tr_valign = '';
+        $this->tr_height = '';
+        $this->tr_align  = "center";
+        $this->tdiv_id   = '';
+
+        $this->rect_width     = 1004;
+        $this->rect_height    = "";
+        $this->rect_bgcolor   = "white";
+        $this->circle_width   = 1004;
+        $this->circle_bgcolor = "#F7Fe8e9eb7F7";
+
+        unset($this->dup_cmp);
+        $this->body_cnt = 0;
+
+        $this->row_reset();
+
+        $this->rect_class  = '';
+        $this->rect_id     = '';
+        $this->div_class   = '';
+        $this->div_tb_fg = 0;
+    }
+
+    // tr단위 reset
+    function row_reset()
+    {
+        unset($this->td_align);
+        unset($this->td_row);
+        unset($this->td_col);
+        unset($this->td_color);
+        unset($this->td_width);
+        unset($this->td_height);
+        unset($this->td_script);
+        unset($this->td_style);    //ADD-20190130-HEM : 각 td의 style 추가
+        unset($this->excel_td);
+        unset($this->sort_td);
+        unset($this->mso);
+        unset($this->sum_td);
+        unset($this->re_td);
+        unset($this->re_td_align);
+        unset($this->re_td_row);
+        unset($this->re_td_col);
+        unset($this->re_td_color);
+        unset($this->re_td_width);
+        unset($this->re_td_height);
+        unset($this->re_td_script);
+        unset($this->re_td_style);    //ADD-20190130-HEM : 각 td의 style 추가
+
+        unset($this->td_title);    //2018.10.23 HEM 추가
+        unset($this->td_re_width);    //2018.10.23 HEM 추가
+
+        $this->tr_color  = '';
+        $this->tr_valign = '';
+        $this->tr_align  = "center";
+        $this->tr_script = '';
+        $this->tr_height = '';
+        $this->tr_width  = '';
+        $this->td_class  = '';
+
+        $this->tail_append  = '';
+        $this->head_append  = '';
+        $this->div_append   = '';
+
+        $this->mouseover    = false;
+        $this->OverColor    = '#f9f9f9';
+
+        $this->mouseout     = false;
+        $this->OutColor     = 'white';
+
+        $this->subtot_fg    = 0;
+        $this->sort_fg      = 0;
+        $this->scroll_width = 18;
+        $this->scroll_height= 18;
+
+        $this->sort_color   = 'darkblue';
+
+        $this->rect_class = '';
+        $this->rect_id    = '';
+        $this->div_class = '';
+    }
+
+    function sum_reset()
+    {
+        $this->sumtot_fg = 0;
+        $this->subtot_fg = 0;
+        $this->szSumArr  = 0;
+
+        unset($this->sumtot);
+        unset($this->subtot);
+        unset($this->sum_td);
+    }
+
+    function td_row()
+    {
+        $arg_num = func_num_args();
+        for ($i = 0; $i < $arg_num; $i++)  $this->td_row[$i] = func_get_arg($i);
+    }
+
+    function td_col()
+    {
+        $arg_num = func_num_args();
+        for ($i = 0; $i < $arg_num; $i++)  $this->td_col[$i] = func_get_arg($i);
+    }
+
+    function td_width()
+    {
+        $arg_num = func_num_args();
+        for ($i = 0; $i < $arg_num; $i++)  $this->td_width[$i] = func_get_arg($i);
+    }
+
+    function td_re_width()
+    {
+        $arg_num = func_num_args();
+        for ($i = 0; $i < $arg_num; $i++)  $this->td_re_width[$i] = func_get_arg($i);
+    }
+
+    function td_height()
+    {
+        $arg_num = func_num_args();
+        for ($i = 0; $i < $arg_num; $i++)  $this->td_height[$i] = func_get_arg($i);
+    }
+
+    function td_show()
+    {
+        $arg_num = func_num_args();
+        for ($i = 0; $i < $arg_num; $i++)  $this->td_show[$i] = func_get_arg($i);
+    }
+
+    function td_format_dot()
+    {
+        $arg_num = func_num_args();
+        for ($i = 0; $i < $arg_num; $i++)  $this->td_format_dot[$i] = func_get_arg($i);
+    }
+
+    function td_format_str()
+    {
+        $arg_num = func_num_args();
+        for ($i = 0; $i < $arg_num; $i++)  $this->td_format_str[$i] = func_get_arg($i);
+    }
+
+    function td_color()
+    {
+        $arg_num=func_num_args();
+        for ($i = 0; $i < $arg_num; $i++)  $this->td_color[$i] = func_get_arg($i);
+    }
+
+    function td_align()
+    {
+        $arg_num = func_num_args();
+        for ($i = 0; $i < $arg_num; $i++)  $this->td_align[$i] = func_get_arg($i);
+    }
+
+    function td_valign()
+    {
+        $arg_num = func_num_args();
+        for ($i = 0; $i < $arg_num; $i++)  $this->td_valign[$i] = func_get_arg($i);
+    }
+
+    function td_script()
+    {
+        $arg_num = func_num_args();
+        for ($i = 0; $i < $arg_num; $i++)  $this->td_script[$i] = func_get_arg($i);
+    }
+
+    function excel_td()
+    {
+        $arg_num = func_num_args();
+        for ($i = 0; $i < $arg_num; $i++)  $this->excel_td[$i] = func_get_arg($i);
+    }
+
+    function sum_td()
+    {
+        $arg_num = func_num_args();
+        for ($i = 0; $i < $arg_num; $i++)  $this->sum_td[$i] = func_get_arg($i);
+    }
+
+    function dup_td()
+    {
+        $arg_num = func_num_args();
+        for ($i = 0; $i < $arg_num; $i++)  $this->dup_td[$i]=func_get_arg($i);
+    }
+
+    function mso()
+    {
+        $arg_num = func_num_args();
+        for ($i = 0; $i < $arg_num; $i++)  $this->mso[$i] = func_get_arg($i);
+    }
+
+    //소계 YSN (준호편집)
+    function sub_td()
+    {
+        $this->sub_td_cnt = func_num_args();
+        for($i = 0; $i < $this->sub_td_cnt; $i++) $this->sub_td[$i] = func_get_arg($i);
+    }
+
+    function sub_title()
+    {
+        $vClsCnt = func_num_args();
+        for($i = 0; $i < $vClsCnt; $i++) $this->sub_title[$i] = func_get_arg($i);
+    }
+
+    function sub_class()
+    {
+        $vClsCnt = func_num_args();
+        for($i = 0; $i < $vClsCnt; $i++) $this->sub_class[$i] = func_get_arg($i);
+    }
+
+    //2018.10.23 HEM 추가
+    function td_title()
+    {
+        $arg_num = func_num_args();
+        for ($i = 0; $i < $arg_num; $i++)  $this->td_title[$i] = func_get_arg($i);
+    }
+
+    //ADD-20190130-HEM
+    function td_style()
+    {
+        $arg_num = func_num_args();
+        for ($i = 0; $i < $arg_num; $i++)  $this->td_style[$i] = func_get_arg($i);
+    }
+
+    /*************************** 소계 ***************************/
+    // 소계 및 합계 동시사용...YSN
+    function total_width()
+    {
+        $arg_num = func_num_args();
+        if($arg_num > 1)
+        {
+            for ($i = 0; $i < $arg_num; $i++)  $this->total_width[$i] = func_get_arg($i);
+        }
+        else
+        {
+            $tdwid = func_get_arg($i);
+            $this->total_width[0] = 0;
+
+            for($i = 0; $i < $this->subtot_col; $i++)
+            {
+                $this->total_width[0] += $tdwid[$i];
+            }
+
+            $loop_cnt = sizeof($tdwid);
+            for($j = 1, $i = $this->subtot_col; $i < $loop_cnt; $i++, $j++)
+            {
+                $this->total_width[$j] = $tdwid[$i];
+            }
+        }
+    }
+    //소계 YSN End
+
+    function sort_td()
+    {
+        global $orderby;
+        global $asc;
+
+        $arg_num = func_num_args();
+        for ($i = 0; $i < $arg_num; $i++)  $this->sort_td[$i] = func_get_arg($i);
+
+        if ($orderby)
+        {
+            $this->orderby = ($orderby > '0') ? ( ($asc == 0) ? $orderby." DESC" : $orderby) : $this->orderby;
+            $this->asc_desc = (strpos($this->orderby, 'DESC')) ? 'D' : 'A';    // ADD-20200924-HEM : 오름차순, 내림차순에 대한 flag 설정
+        }
+        else
+        {
+            $this->orderby = $this->sort_td[$this->sort_default];
+            if ($this->asc_desc == 'D') $this->orderby .= ' DESC ';
+        }
+    }
+
+    function div_title_button($title, $button = '')
+    {
+        $echo_title  = "";
+        $echo_button = "";
+        if ($title) {
+            $echo_title = "<div class='title_wrapper'>";
+            if($this->div_tb_fg == 0)
+            {
+                $echo_title .= "<span class='ico_bar'></span>";
+            }
+            else
+            {
+                $echo_title .= "<span>☞</span>";
+            }
+            $echo_title .= $title."</div>";
+        }
+
+        if ($button)
+        {
+            $echo_button = "<div class='button_wrapper'>".$button."</div>";
+        }
+
+        echo "<div class='div_tb_wrapper' style='width:".($this->div_tb_width+$this->scroll_width + 2)."px;'>"
+             .$echo_title.$echo_button
+             ."</div>";
+    }
+
+    /* 조회 조건 테두리 영역 시작 */
+    function table_thead()
+    {
+        $default = 'box-search';
+        if($this->tclass != '') $this->tclass = '"'.$default . ' ' . $this->tclass.'"';
+        else                    $this->tclass = $default;
+
+        if($this->tid !='')     $this->tid = "id=$this->tid ";
+        if($this->tdiv_id !='') $this->tdiv_id = "id=$this->tdiv_id ";
+
+        $width = ($this->twidth + $this->scroll_width + 2) .'px';
+        echo "<div class=$this->tclass $this->tdiv_id style='width:$width'>\n";
+        echo "   \n<!-- 타이틀 시작 -->\n\n";
+
+        $this->reset();
+        $this->border = 1;
+    }
+
+    /* 조회 조건 테두리 영역 끝 */
+    function table_ttail()
+    {
+        echo "\n<!-- 타이틀 끝 -->\n\n    </div>";
+    }
+
+    // Box Table의 시작
+    function rect_head()
+    {
+        $rect_width = ($this->rect_width + $this->scroll_width + 2) . 'px';
+        // NOV-NEW-UPDATE
+        if($this->rect_class == "")
+        {
+            $this->rect_class = "astems-rect1";
+        }
+
+        /*if($this->rect_height != '' || $this->rect_height != 0)
+        {
+            $rect_height = 'height:'.$this->rect_height.'px';
+        }*/
+
+        echo "<div class='$this->rect_class' style='width:$rect_width; $rect_height'>";
+    }
+
+    // Box Table의 끝
+    function rect_tail()
+    {
+        echo "</div>";
+    }
+
+    // 좌우스크롤 없는 테이블 모듈
+    function div_thead($id='id=table-title')
+    {
+        if($this->div_class == '') $this->div_class = 'box-thead';
+        else                       $this->div_class = 'box-thead '.$this->div_class;
+
+        if($this->td_class == '') $this->td_class = 'astems-title';
+
+        echo "<div class='$this->div_class'>\n";
+
+        $this->div_append = "<td nowrap style='padding:0;border-right:0;text-align:center;width:".$this->scroll_width."px'  class=$this->td_class $this->div_script>*</td>\n";
+    }
+
+    function div_ttail()
+    {
+        echo "</div>\n";
+    }
+
+    function div_head($id='id=prtExpand')
+    {
+        if ($this->prtExpand_fg)
+        echo "<script>var gClientDivPrint='prtExpand'</script>\n";
+
+        if($this->div_class == '') $this->div_class = 'box-tbody';
+        else                       $this->div_class = 'box-tbody ' . $this->div_class;
+
+        $height = $this->div_height.'px';
+        echo "<div class='$this->div_class' style='height:$height;border-spacing:0;'>\n";
+        echo "  <div $id STYLE='text-align: left; position:relative; left:$this->div_left; top:0; height:$this->div_height".'px'."; border:0; overflow-y:$this->div_overflow;'>\n";
+    }
+
+    function div_tail()
+    {
+        echo "  </div>\n";
+        echo "</div>\n";
+    }
+
+    function XY_title()
+    {
+        $this->Twidth = $this->Twidth + $this->scroll_width;    // 20201022-ADD-HEM
+
+        echo "<table class='table_xy' width=$this->Twidth cellpadding=0 cellspacing=0 border=0 align=center style='border-collapse:collapse;'>\n";
+        echo "  <tr>\n";
+        if($this->seperate_col >= 0)
+        {
+            echo "  <td width='$this->Lwidth' class='box-lhead' >";
+            //////////////////////////////// 테이블 타이틀(좌측) 시작 ///////////////////////////////
+            $this->div_width = $this->Lwidth;
+            $this->div_l_thead('id=DIV_LHEAD');
+                $this->border = 1;
+                $this->width = $this->Lwidth;
+                $this->table_class = ' ';
+                $this->table_head('id=DIV_LHEAD');
+                    $this->td_width = $this->XY_width[0];
+                    echo $this->l_str;
+                $this->table_tail();
+            $this->div_l_ttail();
+            //////////////////////////////// 테이블 타이틀(좌측) 끝 ///////////////////////////////
+            echo "  </td>\n";
+        }
+        else
+        {
+            //$this->Rwidth += ($this->scroll_width);
+            $this->Rwidth;
+        }
+        echo "  <td width=$this->Rwidth class='box-rhead'>";
+        //////////////////////////////// 테이블 타이틀(우측) 시작 ///////////////////////////////
+        $this->div_width = min($this->Rwidth, $this->RTwidth + $this->scroll_width);
+        $this->div_r_thead('id=DIV_RHEAD');
+            $this->width = $this->RTwidth;
+            $this->table_head('id=DIV_RHEAD');
+                $this->td_width = $this->XY_width[1];
+                echo $this->r_str;
+            $this->table_tail();
+        $this->div_r_ttail();
+        //////////////////////////////// 테이블 타이틀(우측) 끝 ///////////////////////////////
+        if($this->seperate_col < 0)
+        {
+            $this->Rwidth -= ($this->scroll_width);
+        }
+        echo "  </td>\n";
+        echo "</tr>\n";
+        $this->l_str = "";
+        $this->r_str = "";
+
+        unset($this->sumtotal);
+    }
+
+    function XY_body()
+    {
+        echo "<tr>\n";
+        if($this->seperate_col >= 0)
+        {
+            if ($this->prtExpand_fg)
+            echo "<script>var gClientDivPrint='DIV_LBODY';</script>\n";
+
+            echo "  <td width='$this->Lwidth' class='box-lbody'>";
+            //////////////////////////////// 테이블 본문(좌측) 시작 ///////////////////////////////
+            $this->div_width  = $this->Lwidth;
+            $this->div_height = $this->height+1;
+            $this->div_l_head('id=DIV_LBODY');
+                $this->border = 1;
+                $this->width = $this->Lwidth;
+                $this->table_head('id=DIV_LBODY');
+                    $this->td_width = $this->XY_width[0];
+                    echo $this->l_str;
+                $this->table_tail();
+            $this->div_l_tail();
+            //////////////////////////////// 테이블 본문(좌측) 끝 ///////////////////////////////
+            echo "  </td>\n";
+        }
+
+        if ($this->prtExpand_fg)
+            echo "<script>var gClientDivPrint_1='DIV_RBODY';</script>\n";
+
+        echo "  <td width=$this->Rwidth class='box-rbody'>";
+        //////////////////////////////// 테이블 본문(우측) 시작 ///////////////////////////////
+        $this->div_width = min($this->Rwidth, $this->RTwidth + $this->scroll_width + 2);
+        $this->div_height = $this->height;
+        $this->div_r_head('id=DIV_RBODY');
+            $this->border = 1;
+            $this->width = $this->RTwidth;
+            $this->table_head('id=DIV_RBODY');
+                $this->td_width = $this->XY_width[1];
+                echo $this->r_str;
+            $this->table_tail();
+        $this->div_r_tail();
+        //////////////////////////////// 테이블 본문(우측) 끝 ///////////////////////////////
+        echo "  </td>\n";
+        echo "</tr>\n";
+        $this->l_str = "";
+        $this->r_str = "";
+    }
+
+    function XY_tail()
+    {
+        if($this->l_str == "" && $this->r_str == "")
+        {
+            echo "<tr>\n";
+            if($this->seperate_col >= 0)
+            {
+                echo "  <td class='TD_TAIL' width='$this->Lwidth' style='border-right:1px solid #b2b2b2'>\n";
+                //////////////////////////////// 테이블 마지막(좌측) 시작 ///////////////////////////////
+                $this->div_width = $this->Lwidth;
+                $this->div_display = "display:none;";
+                $this->div_l_thead('id=DIV_LTAIL');
+                $this->div_l_ttail();
+                $this->div_display = "";
+                echo "  </td>\n";
+                //////////////////////////////// 테이블 마지막(좌측) 끝 ///////////////////////////////
+            }
+            //////////////////////////////// 테이블 마지막(우측) 시작 ///////////////////////////////
+            echo "  <td class='TD_TAIL' width=$this->Rwidth>\n";
+            $this->div_width = $this->Rwidth;
+            $this->div_display = "display:none;";
+            $this->div_r_thead('id=DIV_RTAIL');
+            $this->div_r_ttail();
+            $this->div_display = "";
+            echo "  </td>\n";
+            echo "</tr>\n";
+            echo "</table>\n";
+            //////////////////////////////// 테이블 마지막(우측) 끝 ///////////////////////////////
+        }
+        else
+        {
+            echo "<tr>\n";
+            if($this->seperate_col >= 0)
+            {
+                echo "  <td class='TD_TAIL' width='$this->Lwidth' style='border-right:1px solid #b2b2b2'>";
+                //////////////////////////////// 테이블 마지막(좌측) 시작 ///////////////////////////////
+                $this->div_width  = $this->Lwidth;
+                $this->div_height = 0;
+                $this->div_l_thead('id=DIV_LTAIL');
+                    $this->width = $this->Lwidth;
+                    $this->table_head('id=DIV_LTAIL');
+                        $this->td_width = $this->XY_width[0];
+                        echo $this->l_str;
+                    $this->table_tail();
+                $this->div_l_ttail();
+                //////////////////////////////// 테이블 마지막(좌측) 끝 ///////////////////////////////
+                echo "</td>\n";
+            }
+            else
+            {
+                $this->Rwidth += ($this->scroll_width);
+            }
+
+            echo "  <td class='TD_TAIL' width=$this->Rwidth>";
+            //////////////////////////////// 테이블 마지막(우측) 시작 ///////////////////////////////
+            $this->div_width = min($this->Rwidth, $this->RTwidth + $this->scroll_width + 2);
+            $this->div_height = 0;
+            $this->div_r_thead('id=DIV_RTAIL');
+                $this->border = 1;
+                $this->width = $this->RTwidth;
+                $this->table_head('id=DIV_RTAIL');
+                    $this->td_width = $this->XY_width[1];
+                    echo $this->r_str;
+                $this->table_tail();
+            $this->div_r_ttail();
+            //////////////////////////////// 테이블 마지막(우측) 끝 ///////////////////////////////
+            if($this->seperate_col < 0)
+            {
+                $this->Rwidth -= ($this->scroll_width);
+            }
+            echo "  </td>\n";
+            echo "</tr>\n";
+            echo "</table>\n";
+        }
+
+        $this->l_str = "";
+        $this->r_str = "";
+    }
+
+    // 좌측 DIV (HEAD)
+    function div_l_thead($id='')
+    {
+        $this->excel_show_fg = 0;
+        if ($this->td_class == '') $this->td_class = 'astems-title2';
+        echo "<div $id STYLE='width: $this->div_width;position:relative; left:$this->div_left; top:0; border-style:none; overflow-x:hidden; overflow-y:hidden; $this->div_display'>\n";
+    }
+
+    function div_l_ttail()
+    {
+        $this->div_script = '';
+        $this->div_display = '';
+        echo "</div>\n";
+    }
+
+    // 우측 DIV (HEAD)
+    function div_r_thead($id='')
+    {
+        $this->excel_show_fg = 1;
+        if($this->td_class == '') $this->td_class = 'astems-title2';
+
+        $this->div_width = $this->div_width + $this->scroll_width - 3;
+        echo "<div $id STYLE='position:relative; left:$this->div_left; top:0; width:".$this->div_width."px; border-style:none; overflow-x:hidden; $this->div_display'>\n";
+        //$this->width += $this->scroll_width;
+        $this->div_append = "<td nowrap width=$this->scroll_width class=$this->td_class  $this->div_script>*</td>\n";
+    }
+
+    function div_r_ttail()
+    {
+        $this->div_script = '';
+        $this->div_display = '';
+        echo "</div>\n";
+    }
+
+    // 좌측 DIV (BODY)
+    function div_l_head($id='')
+    {
+        $this->excel_show_fg = 0;
+        $this->div_fg = 1;
+        $this->div_height -= $this->scroll_height;
+        if($this->seperate_col >= 0) $do_scroll_str = "onscroll='do_scroll2(this.scrollTop);'";
+
+        echo "<div $id style='position:relative; left:$this->div_left; top:0; width:".$this->div_width."px; height:".$this->div_height."px; border-style:none; overflow-x:hidden; overflow-y:hidden;' $do_scroll_str>\n";
+    }
+
+    function div_l_tail()
+    {
+        $this->div_display = '';
+        echo "</div>\n";
+        $width = $this->div_width+1;
+        echo "<div style='height:17px;background:#E4E4E4;'></div>";
+        $this->div_fg = 0;
+    }
+
+    // 우측 DIV (BODY)
+    function div_r_head($id='')
+    {
+        $this->excel_show_fg = 1;
+        $this->div_fg = 1;
+        if($this->seperate_col >= 0)
+        {
+            $do_scroll_str  = "onscroll='do_scroll(this.scrollLeft,this.scrollTop);'";
+            $overflow_x_str = "overflow-x:scroll;";
+        }
+
+        $this->div_width = $this->div_width + $this->scroll_width - 3;    // NOV
+        echo "<div $id STYLE='position:relative; left:$this->div_left; top:0; height:".$this->div_height."px; width:".$this->div_width."px; border-style:none; overflow-y:$this->div_overflow; $overflow_x_str' $do_scroll_str>\n";
+    }
+
+    function div_r_tail()
+    {
+        $this->div_display = '';
+        echo "</div>\n";
+        $this->div_fg = 0;
+    }
+
+    /* 내용 테이블 시작 */
+    function table_head($ID = '')
+    {
+        if($this->table_id !='') $this->temp_id = "id=$this->table_id ";
+
+        if(strpos($ID, 'DIV_LHEAD') !== false)
+        {
+            $height = "height:".($this->tr_height)."px;";
+        }
+
+        //$default = 'astems-table';
+
+        //if($this->table_class != '') $this->table_class = '"'.$default . ' ' . $this->table_class.'"';
+        //else                         $this->table_class = $default;
+
+        if($this->div_class == '')
+        {
+            if($this->table_class == 'astems-grid3' || $this->table_class == 'astems-grid4'
+               || $this->table_class == 'div-description')    // scroll 없는 grid 유형
+            {
+                $this->width = $this->width + $this->scroll_width+2;
+            }
+            else
+            {
+                if(strpos($ID, 'DIV_LHEAD') !== false || strpos($ID, 'DIV_LBODY') !== false || strpos($ID, 'DIV_LTAIL') !== false
+                   || strpos($ID, 'DIV_RHEAD') !== false || strpos($ID, 'DIV_RBODY') !== false || strpos($ID, 'DIV_RTAIL') !== false)
+                {
+                    $this->width = $this->width + 1;
+                }
+                else
+                {
+                    $this->width = $this->width + $this->scroll_width;
+                }
+            }
+        }
+        else
+        {
+            $this->width = $this->width + 1;
+        }
+
+        echo "<table $this->temp_id class='$this->table_class' bgcolor=$this->bgcolor $this->table_script style='$height border-collapse: collapse; $border' width=$this->width>\n";
+    }
+
+    function table_body()
+    {
+        global $orderby;
+        $arg_num = func_num_args();
+        $subExecFlag = 0;           //소계루트를 실행할지여부
+
+        $this->sub_arg_count = $arg_num;
+
+        // 소계구하기... 준호버젼
+        if($this->sub_flag == 1)
+        {
+            for ($i = 0; $i < $this->sub_arg_count; $i++)
+            {
+                if($this->sub_td[$i] == 1)
+                {
+                    if($this->sub_rowcount == 1 && $subExecFlag == 0)
+                    {
+                        if($this->fzCompare != "" && $this->fzCompare != func_get_arg($i))
+                        {
+                            $txtData .= "<tr height=$this->sub_height>\n<td nowrap align=center colspan=$this->subtot_col class=".$this->sub_class[0].">".$this->sub_title[0]."</td>\n";
+                            for($m = $this->subtot_col; $m < $arg_num; $m++)
+                            {
+                                if($this->sub_class[$m] == "")  $this->sub_class[$m] = $this->sub_class[0];
+                                if($this->td_show[$m] == 'Y' || $this->td_show[$m] == '')
+                                {
+                                    if($this->td_format_dot[$m] != "")  $td_value = number_format($this->arrSubTot[$m], $this->td_format_dot[$m]);
+                                    else                                $td_value = number_format($this->arrSubTot[$m]);
+                                    $txtData .= "<td nowrap align=$this->sub_align class=".$this->sub_class[$m].">".$td_value.$this->td_format_str[$m]."</td>\n";
+                                }
+                                else
+                                    $txtData .= "<td nowrap align=$this->sub_align class=".$this->sub_class[$m].">&nbsp;</td>\n";
+                            }
+                            $txtData .= "</tr>\n";
+
+                            $subExecFlag = 1;
+                            if($this->excel_fg == 1)    $this->excel_data .= $txtData;
+                            echo $txtData;
+
+                            unset($this->arrSubTot);
+                            $txtData = '';
+                        }
+                    }
+                    $this->fzCompare = func_get_arg($i);
+                    break;
+                }
+            }
+
+            for($i = $this->subtot_col; $i < $arg_num; $i++)
+            {
+                $fzNumberAmt = func_get_arg($i);
+                $this->arrSubTot[$i] += doubleval(str_replace(",","",$fzNumberAmt)); // 소계
+            }
+        }
+        //소계 끝.
+
+        for ($i = 0; $i < $arg_num; $i++)
+        {
+            $fzNumberAmt = func_get_arg($i);
+            $this->sumtotal[$i] = $this->sumtotal[$i] + doubleval(str_replace(",","",$fzNumberAmt)); // 총합계
+
+            if ((strlen($this->td_width[$i])    >  0) and ($this->td_width[$i]    != '0'))  
+            {
+	            if( strpos($this->td_width[$i], "%") == true) 
+	            {	            
+	            	$width = " width:".$this->td_width[$i]."; ";
+	            }
+	            else
+	            {
+	            	/* 2021.07.12 org */
+	            	$width = " width:".$this->td_width[$i]."px; ";
+	            }                        
+	          }
+            if ((strlen($this->td_height[$i])   >  0) and ($this->td_height[$i]   != '0'))  $height = " height:".$this->td_height[$i]."px;";
+            if ((strlen($this->td_color[$i])    >  0) and ($this->td_color[$i]    != '0'))  $color = " bgcolor=".$this->td_color[$i];
+            if (intval($this->td_col[$i])       >  1) $col = " colspan=".$this->td_col[$i];
+            if (intval($this->td_row[$i])       >  1) $row = " rowspan=".$this->td_row[$i];
+            if (strlen($this->td_align[$i])     >  1) $align = " align=".$this->td_align[$i];
+            if (strlen($this->td_valign[$i])    >  1) $valign = " valign=".$this->td_valign[$i];
+            if (strlen($this->td_script[$i])    >  1) $script = " ".$this->td_script[$i];
+            if (strlen($this->td_style[$i])     >  1)
+            {
+                $td_style = " ".$this->td_style[$i];    //ADD-20190130-HEM
+            }
+            else
+            {
+                $td_style = " ";    //ADD-20190130-HEM
+            }
+
+            if((strlen($this->td_title[$i])    >  0) and ($this->td_title[$i]    != '0')) $td_title = "th";    //2018.10.23 HEM 추가
+            else                                                                          $td_title = "td";    //2018.10.23 HEM 추가
+
+            if ($this->td_class  != '')             $td_class  = ' class='.$this->td_class;
+
+            if ($this->dup_fg && $this->dup_td[$i] && ($this->dup_cmp[$i] == func_get_arg($i)))
+                $strArgReal = $this->dup_sign;
+            else
+                $strArgReal = func_get_arg($i);
+
+            if (($this->sort_fg > 0) && (isset($this->sort_td[$i]) && ($this->sort_td[$i] != '0')))
+            {
+                if ($this->sort_fg == 2)
+                {
+                    $result .= "<$td_title style='$width $height $td_style' nowrap$color$col$row$align$valign$script$td_class><font onclick=sortTable($i,$this->table_id) style='cursor:pointer;color:$this->sort_color'>".$strArgReal.$this->td_format_str[$i]."</font></td>\n";
+                }
+                else
+                {
+                    $nIdx = ($this->sort_td[$i]) ? $this->sort_td[$i] : $i+1;
+                    // 오름차순, 내림차순에 맞는 td image 추가
+                    $td_bg = "/image/ico_sort.png";
+                    if($orderby == $nIdx)
+                    {
+                        if($this->asc_desc == "A")   // 오름차순
+                        {
+                            $td_bg = "/image/ico_asc.png";
+                        }
+                        else if($this->asc_desc == "D")   // 내림차순
+                        {
+                            $td_bg = "/image/ico_desc.png";
+                        }
+                    }
+
+                    //$result .= "<$td_title style='$width $height $td_style' nowrap$color$col$row$align$valign$script$td_class><font onclick=\"serverSort('$orderby','$nIdx')\" style='cursor:pointer;color:darkblue'>".$strArgReal.$this->td_format_str[$i]."</font></td>\n";
+                    $result .= "<$td_title style='$width $height $td_style background:#e8e9eb url($td_bg) no-repeat right 5px center;' nowrap$color$col$row$align$valign$script$td_class>"
+                              ."<font onclick=\"serverSort('$orderby','$nIdx')\" style='cursor:pointer;'>"
+                              .$strArgReal
+                              .$this->td_format_str[$i]."</font></$td_title>\n";
+                }
+            }
+            else
+            {
+                $result .= "<$td_title style='$width $height $td_style' nowrap$color$col$row$align$valign$script$td_class>".$strArgReal.$this->td_format_str[$i]."</td>\n";
+            }
+
+            if ($this->excel_fg == 1 && (!isset($this->excel_td[$i]) || $this->excel_td[$i] == 1))
+            {
+                if ($this->mso[$i] == '1') $mso = $this->mso_script;
+                $szExcel .= "<$td_title style='$width $height border:thin solid black; $td_style' nowrap$color$col$row$align$valign$mso>".func_get_arg($i).$this->td_format_str[$i]."</td>\n";
+            }
+
+            if($this->dup_fg) $this->dup_cmp[$i] = func_get_arg($i);
+            $color = $col = $row = $align = $width = $valign = $script = $height = $mso = '';
+        }
+
+        if ($this->tr_color  != '') $tr_color  = ' bgcolor='.$this->tr_color;
+        if ($this->tr_align  != '') $tr_align  = ' align='.$this->tr_align;
+        if ($this->tr_valign != '') $tr_valign = ' valign='.$this->tr_valign;
+        if ($this->tr_script != '') $tr_script = ' '.$this->tr_script;
+        if ($this->tr_height != '') $tr_height = ' height='.$this->tr_height;
+
+        if ($this->mouseover)
+        {
+            //$mouseEvt  = " onmouseover=\"this.style.backgroundColor='$this->OverColor'\" ";
+            $style = " style='cursor:$this->cursor' ";
+        }
+
+        if ($this->mouseout)
+        {
+            //$mouseEvt .= " onmouseout=\"this.style.backgroundColor='$this->OutColor'\" ";
+        }
+
+        $insBreak = (($this->body_cnt%$this->skip_row) == 0 && $this->body_cnt != 0) ? $this->insBreak : '';
+        echo "<tr $insBreak$tr_height$tr_color$tr_align$tr_valign$mouseEvt$style$tr_script>\n$this->head_append$result$this->tail_append$this->div_append</tr>\n";
+
+        if ($this->excel_fg == 1)
+        {
+            if($this->excel_show_fg == 1)
+            {
+                $this->excel_data .=  "<tr$tr_height$tr_color$tr_align$tr_valign>\n$this->excel_bindstr$this->head_append$szExcel$this->tail_append</tr>\n";
+            }
+            else
+            {
+                $this->excel_bindstr = $szExcel;
+            }
+        }
+
+        $tr_color = $tr_align = $tr_valign = $tr_script = $tr_height = $style = '';
+        $this->body_cnt++;
+
+        $this->row_reset();
+    }
+
+    function table_tail()
+    {
+        echo "</table>\n";
+        $this->reset();
+    }
+
+    /****************************************************************************************************/
+    /* 좌우스크롤 되는 테이블 모듈                                                                      */
+    /* 작성 : 최준호 (2003.05.27)                                                                       */
+    /****************************************************************************************************/
+    function table_bodyXY()
+    {
+        global $orderby;
+        $arg_num = func_num_args();
+        $arg_value = func_get_args();
+
+        if(is_array($this->re_td) || is_object($this->re_td))
+        {
+          for($i=$arg_num; $i < $arg_num + sizeof($this->re_td); $i++)
+          {
+              $arg_value[] = $this->re_td[$i-$arg_num];
+
+              if ((strlen($this->re_td_width [$i-$arg_num]) > 0) and ($this->re_td_width [$i-$arg_num] != '0'))  $this->td_width [$i] = $this->re_td_width [$i-$arg_num];
+              if ((strlen($this->re_td_height[$i-$arg_num]) > 0) and ($this->re_td_height[$i-$arg_num] != '0'))  $this->td_height[$i] = $this->re_td_height[$i-$arg_num];
+              if ((strlen($this->re_td_color [$i-$arg_num]) > 0) and ($this->re_td_color [$i-$arg_num] != '0'))  $this->td_color [$i] = $this->re_td_color [$i-$arg_num];
+              if (intval ($this->re_td_col   [$i-$arg_num]) > 1)                                                 $this->td_col   [$i] = $this->re_td_col   [$i-$arg_num];
+              if (intval ($this->re_td_row   [$i-$arg_num]) > 1)                                                 $this->td_row   [$i] = $this->re_td_row   [$i-$arg_num];
+              if (strlen ($this->re_td_align [$i-$arg_num]) > 1)                                                 $this->td_align [$i] = $this->re_td_align [$i-$arg_num];
+              if (strlen ($this->re_td_valign[$i-$arg_num]) > 1)                                                 $this->td_valign[$i] = $this->re_td_valign[$i-$arg_num];
+              if (strlen ($this->re_td_script[$i-$arg_num]) > 1)                                                 $this->td_script[$i] = $this->re_td_script[$i-$arg_num];
+              if ($this->td_class  != '') $td_class[$i] = $this->td_class ;
+          }
+          $arg_num = $i;
+        }
+
+        $this->sub_arg_count = $arg_num;
+
+        // 소계구하기... 준호버젼
+        if($this->sub_flag == 1)
+        {
+            for ($i=0;$i< $this->sub_arg_count;$i++)
+            {
+                if($this->sub_td[$i] == 1)
+                {
+                    if($this->sub_rowcount == 1 && $subExecFlag == 0)
+                    {
+                        if($this->fzCompare != "" && $this->fzCompare != $arg_value[$i])
+                        {
+                            $l_txtData .= "<td nowrap align=center colspan=$this->subtot_col class=".$this->sub_class[0].">".$this->sub_title[0]."</td>\n";
+                            for($m = $this->subtot_col; $m < $arg_num; $m++)
+                            {
+                                if($this->sub_class[$m] == "")  $this->sub_class[$m] = $this->sub_class[0];
+                                if($m < $this->seperate_col)
+                                {
+                                    if($this->td_show[$m] == 'Y' || $this->td_show[$m] == '')
+                                    {
+                                        if($this->td_format_dot[$m] != "")  $td_value = number_format($this->arrSubTot[$m], $this->td_format_dot[$m]);
+                                        else                                $td_value = number_format($this->arrSubTot[$m]);
+                                        $l_txtData .= "<td nowrap align=$this->sub_align class=".$this->sub_class[$m].">".$td_value.$this->td_format_str[$m]."</td>";
+                                    }
+                                    else
+                                        $l_txtData .= "<td nowrap align=$this->sub_align class=".$this->sub_class[$m].">&nbsp;</td>";
+                                }
+                                else
+                                {
+                                    if($this->td_show[$m] == 'Y' || $this->td_show[$m] == '')
+                                    {
+                                        if($this->td_format_dot[$m] != "")  $td_value = number_format($this->arrSubTot[$m], $this->td_format_dot[$m]);
+                                        else                                $td_value = number_format($this->arrSubTot[$m]);
+                                        $r_txtData .= "<td nowrap align=$this->sub_align class=".$this->sub_class[$m].">".$td_value.$this->td_format_str[$m]."</td>";
+                                    }
+                                    else
+                                        $r_txtData .= "<td nowrap align=$this->sub_align class=".$this->sub_class[$m].">&nbsp;</td>";
+                                }
+                            }
+                            $txtData  .= "<tr height=$this->sub_height>$l_txtData$r_txtData</tr>\n";
+                            $l_txtData = "<tr height=$this->sub_height>$l_txtData</tr>\n";
+                            $r_txtData = "<tr height=$this->sub_height>$r_txtData</tr>\n";
+
+                            $subExecFlag = 1;
+                            if($this->excel_fg == 1)    $this->excel_data .= $txtData;
+
+                            if($this->seperate_col >= 0)
+                            {
+                                $this->l_str .= $l_txtData;
+                                $this->r_str .= $r_txtData;
+                            }
+                            else
+                            {
+                                $this->r_str .= $txtData;
+                            }
+
+                            unset($this->arrSubTot);
+                            $txtData = '';
+                            $l_txtData = '';
+                            $r_txtData = '';
+                        }
+                    }
+
+                    $this->fzCompare = $arg_value[$i];
+                    break;
+                }
+            }
+
+            for($i = $this->subtot_col; $i < $arg_num; $i++)
+            {
+                $fzNumberAmt = $arg_value[$i];
+                $this->arrSubTot[$i] += doubleval(str_replace(",","",$fzNumberAmt)); // 소계
+            }
+        }
+        //소계 끝.
+
+        for ($i=0; $i < $arg_num; $i++)
+        {
+            $fzNumberAmt = $arg_value[$i];
+            $this->sumtotal[$i] += doubleval(str_replace(",","",$fzNumberAmt)); // 총합계
+
+            if ((strlen($this->td_width[$i])  >  0) and ($this->td_width[$i]  != '0'))  $width = " width:".($this->td_width[$i])."px; ";
+            if ((strlen($this->td_height[$i]) >  0) and ($this->td_height[$i] != '0'))
+            {
+                $height = " height:".$this->td_height[$i]."px; ";
+            }
+            else
+            {
+                $height = " ";
+            }
+
+            if ((strlen($this->td_color[$i])  >  0) and ($this->td_color[$i]  != '0'))  $color = " bgcolor=".$this->td_color[$i];
+            if (intval($this->td_col[$i])     >  1) $col = " colspan=".$this->td_col[$i];
+            if (intval($this->td_row[$i])     >  1) $row = " rowspan=".$this->td_row[$i];
+            if (strlen($this->td_align[$i])   >  1) $align = " align=".$this->td_align[$i];
+            if (strlen($this->td_valign[$i])  >  1) $valign = " valign=".$this->td_valign[$i];
+            if (strlen($this->td_script[$i])  >  1) $script = " ".$this->td_script[$i];
+            if ($this->td_class  != '')             $td_class  = ' class='.$this->td_class;
+            if (strlen($this->td_style[$i])     >  1)
+            {
+                $style = " ".$this->td_style[$i];    //ADD-20190130-HEM
+            }
+            else
+            {
+                $style = " ";    //ADD-20190130-HEM
+            }
+
+            if ($this->dup_fg && $this->dup_td[$i] && ($this->dup_cmp[$i] == $arg_value[$i]))
+            {
+                $strArgReal = $this->dup_sign;
+            }
+            else
+            {
+                if($this->td_format_dot[$i] != "")  $strArgReal = number_format(str_replace(",","",$arg_value[$i]), $this->td_format_dot[$i]);
+                else                                $strArgReal = $arg_value[$i];
+                $strArgReal .= $this->td_format_str[$i];
+            }
+
+            if (($this->sort_fg > 0) && (isset($this->sort_td[$i]) && ($this->sort_td[$i] != '0')))
+            {
+                if ($this->sort_fg == 2)
+                {
+                    if($this->seperate_col > $i)  $l_result .= "<td style='".$width." ".$height." $style' nowrap$color$col$row$align$valign$script$td_class><font onclick=sortTable($i,$this->table_id) style='cursor:pointer;color:$this->sort_color'>".$strArgReal.$this->td_format_str[$i]."</font></td>\n";
+                    else                          $r_result .= "<td style='".$width." ".$height." $style' nowrap$color$col$row$align$valign$script$td_class><font onclick=sortTable($i,$this->table_id) style='cursor:pointer;color:$this->sort_color'>".$strArgReal.$this->td_format_str[$i]."</font></td>\n";
+                }
+                else
+                {
+                    $nIdx = ($this->sort_td[$i]) ? $this->sort_td[$i] : $i+1;
+                    // 오름차순, 내림차순에 맞는 td image 추가
+                    $td_bg = "/image/ico_sort.png";
+                    if($orderby == $nIdx)
+                    {
+                        if($this->asc_desc == "A")   // 오름차순
+                        {
+                            $td_bg = "/image/ico_asc.png";
+                        }
+                        else if($this->asc_desc == "D")   // 내림차순
+                        {
+                            $td_bg = "/image/ico_desc.png";
+                        }
+                    }
+
+                    if($this->seperate_col > $i)  $l_result .= "<td style='".$width." ".$height." $style background:#f2f2f2 url($td_bg) no-repeat right 5px center;' nowrap$color$col$row$align$valign$script$td_class><font onclick=\"serverSort('$orderby','$nIdx')\" style='cursor:pointer;'>".$strArgReal.$this->td_format_str[$i]."</font></td>\n";
+                    else                          $r_result .= "<td style='".$width." ".$height." $style background:#f2f2f2 url($td_bg) no-repeat right 5px center;' nowrap$color$col$row$align$valign$script$td_class><font onclick=\"serverSort('$orderby','$nIdx')\" style='cursor:pointer;'>".$strArgReal.$this->td_format_str[$i]."</font></td>\n";
+                }
+            }
+            else
+            {
+                if($this->seperate_col > $i)  $l_result .= "<td style='".$width." ".$height." $style' nowrap$color$col$row$align$valign$script$td_class>".$strArgReal.$this->td_format_str[$i]."</td>\n";
+                else                          $r_result .= "<td style='".$width." ".$height." $style' nowrap$color$col$row$align$valign$script$td_class>".$strArgReal.$this->td_format_str[$i]."</td>\n";
+            }
+
+            if ($this->excel_fg == 1 && (!isset($this->excel_td[$i]) || $this->excel_td[$i] == 1))
+            {
+                if ($this->mso[$i] == '1') $mso = $this->mso_script;
+                //$szExcel .= "    <td nowrap$width$height$color$col$row$align$valign$mso>".$arg_value[$i]."</td>\n";
+                $szExcel .= "<td style='".$width." ".$height." border:thin solid black;' nowrap$color$col$row$align$valign$mso>".$strArgReal.$this->td_format_str[$i]."</td>\n";
+            }
+
+            if($this->dup_fg) $this->dup_cmp[$i] = $arg_value[$i];
+
+            $color = $col = $row = $align = $width = $valign = $script = $height = $mso = '';
+        }
+
+        if ($this->tr_color  != '') $tr_color  = ' bgcolor='.$this->tr_color;
+        if ($this->tr_align  != '') $tr_align  = ' align='.$this->tr_align;
+        if ($this->tr_valign != '') $tr_valign = ' valign='.$this->tr_valign;
+        if ($this->tr_script != '') $tr_script = ' '.$this->tr_script;
+        if ($this->tr_height != '') $tr_height = ' height='.$this->tr_height;
+
+        if ($this->mouseover)
+        {
+            //$mouseEvt  = " onmouseover=\"this.style.backgroundColor='$this->OverColor'\" ";
+            $style = " style='cursor:$this->cursor' ";
+        }
+
+        if ($this->mouseout)
+        {
+            //$mouseEvt .= " onmouseout=\"this.style.backgroundColor='$this->OutColor'\" ";
+        }
+
+        $insBreak = (($this->body_cnt%$this->skip_row) == 0 && $this->body_cnt != 0) ? $this->insBreak : '';
+
+        $this->l_str .= "<tr $insBreak$tr_height$tr_color$tr_align$tr_valign$mouseEvt$style$tr_script>\n$this->head_append$l_result$this->tail_append$this->div_append</tr>\n";
+        //if($this->div_script != "") $this->div_append = "<td nowrap style='padding:0;width:16px;' $this->div_script class=$this->td_class>*</td>\n";
+        //$this->div_append = "<td nowrap style='padding:0;width:13px;' class=$this->td_class  $this->div_script>*</td>\n";
+        if($this->div_script != "") $this->div_append = "<td nowrap style='border-right:0;padding:0;text-align:center;' width=$this->scroll_width class='$this->td_class' $this->div_script>*</td>\n";
+        $this->r_str .= "<tr $insBreak$tr_height$tr_color$tr_align$tr_valign$mouseEvt$style$tr_script>\n$this->head_append$r_result$this->tail_append$this->div_append</tr>\n";
+
+        if ($this->excel_fg == 1)
+        {
+            if($this->excel_show_fg == 1)
+                $this->excel_data .=  "  <tr$tr_height$tr_color$tr_align$tr_valign>\n$this->excel_bindstr$this->head_append$szExcel$this->tail_append  </tr>\n";
+            else
+                $this->excel_bindstr = $szExcel;
+        }
+
+        $tr_color = $tr_align = $tr_valign = $tr_script = $tr_height = $style = '';
+        $this->body_cnt++;
+
+        $this->row_reset();
+    }
+
+    function excel_body()
+    {
+        $arg_num = func_num_args();
+        $subExecFlag = 0;           //소계루트를 실행할지여부
+
+        for ($i = 0; $i < $arg_num; $i++)
+        {
+            //if ((strlen($this->td_width[$i])  >  0) and ($this->td_width[$i]  != '0'))  $width = " width=".$this->td_width[$i];
+            //if ((strlen($this->td_height[$i]) >  0) and ($this->td_height[$i] != '0'))  $height = " height=".$this->td_height[$i];
+            if ((strlen($this->td_width[$i])  >  0) and ($this->td_width[$i]    != '0'))  $width = " width:".$this->td_width[$i]."px; ";
+            if ((strlen($this->td_height[$i]) >  0) and ($this->td_height[$i]   != '0'))  $height = " height:".$this->td_height[$i]."px;";
+            if ((strlen($this->td_color[$i])  >  0) and ($this->td_color[$i]  != '0'))  $color = " bgcolor=".$this->td_color[$i];
+            if (intval($this->td_col[$i])     >  1) $col = " colspan=".$this->td_col[$i];
+            if (intval($this->td_row[$i])     >  1) $row = " rowspan=".$this->td_row[$i];
+            if (strlen($this->td_align[$i])   >  1) $align = " align=".$this->td_align[$i];
+            if (strlen($this->td_valign[$i])  >  1) $valign = " valign=".$this->td_valign[$i];
+            if (strlen($this->td_script[$i])  >  1) $script = " ".$this->td_script[$i];
+            if ($this->td_class  != '')             $td_class  = ' class='.$this->td_class;
+
+            /* excel_body 는 excel_fg에 상관없이 엑셀자료로 보이게 한다. 20040409 SYH
+            if ($this->excel_fg == 1 && (!isset($this->excel_td[$i]) || $this->excel_td[$i] == 1))
+            */
+            if ((!isset($this->excel_td[$i]) || $this->excel_td[$i] == 1))
+            {
+                if ($this->mso[$i] == '1') $mso = $this->mso_script;
+                $szExcel .= "    <td style='$width $height border:thin solid black;' nowrap$color$col$row$align$valign$mso>".func_get_arg($i)."</td>\n";
+            }
+            $color   = $col = $row = $align = $width = $valign = $script = $height = $mso = '';
+        }
+
+        if ($this->tr_color  != '') $tr_color  = ' bgcolor='.$this->tr_color;
+        if ($this->tr_align  != '') $tr_align  = ' align='.$this->tr_align;
+        if ($this->tr_valign != '') $tr_valign = ' valign='.$this->tr_valign;
+        if ($this->tr_script != '') $tr_script = ' '.$this->tr_script;
+        if ($this->tr_height != '') $tr_height = ' height='.$this->tr_height;
+
+        if($this->excel_show_fg == 1)
+        {
+            $this->excel_data .= "  <tr$tr_height$tr_color$tr_align$tr_valign>\n$this->excel_bindstr$this->head_append$szExcel$this->tail_append  </tr>\n";
+        }
+        else
+        {
+            $this->excel_bindstr = $szExcel;
+        }
+
+        $tr_color = $tr_align = $tr_valign = $tr_script = $tr_height = $style = '';
+        $this->row_reset();
+    }
+
+    /****************************************************************************************************/
+    /* 가변적인 Excel Body 모듈                                                                         */
+    /* 작성 : ebee00 - 2008.12.17 -                                                                     */
+    /****************************************************************************************************/
+    function excel_bodyXY()
+    {
+        $arg_num   = func_num_args();
+        $arg_value = func_get_args();
+
+        if(is_array($this->re_td) || is_object($this->re_td))
+        {
+            for($i = $arg_num ; $i < $arg_num + sizeof($this->re_td) ; $i++)
+            {
+                $arg_value[] = $this->re_td[$i - $arg_num];
+
+                if ((strlen($this->re_td_width [$i-$arg_num]) > 0) and ($this->re_td_width [$i-$arg_num] != '0'))  $this->td_width [$i] = $this->re_td_width [$i-$arg_num];
+                if ((strlen($this->re_td_height[$i-$arg_num]) > 0) and ($this->re_td_height[$i-$arg_num] != '0'))  $this->td_height[$i] = $this->re_td_height[$i-$arg_num];
+                if ((strlen($this->re_td_color [$i-$arg_num]) > 0) and ($this->re_td_color [$i-$arg_num] != '0'))  $this->td_color [$i] = $this->re_td_color [$i-$arg_num];
+                if (intval ($this->re_td_col   [$i-$arg_num]) > 1)                                                 $this->td_col   [$i] = $this->re_td_col   [$i-$arg_num];
+                if (intval ($this->re_td_row   [$i-$arg_num]) > 1)                                                 $this->td_row   [$i] = $this->re_td_row   [$i-$arg_num];
+                if (strlen ($this->re_td_align [$i-$arg_num]) > 1)                                                 $this->td_align [$i] = $this->re_td_align [$i-$arg_num];
+                if (strlen ($this->re_td_valign[$i-$arg_num]) > 1)                                                 $this->td_valign[$i] = $this->re_td_valign[$i-$arg_num];
+                if (strlen ($this->re_td_script[$i-$arg_num]) > 1)                                                 $this->td_script[$i] = $this->re_td_script[$i-$arg_num];
+            }
+
+            $arg_num = $i;
+        }
+
+        $excel_body_str = "\$this->excel_body(";
+
+        for($i = 0 ; $i < $arg_num ; $i++)
+        {
+            $arg_str = ($i == 0) ? "" : ",";
+            $excel_body_str .= $arg_str."\$arg_value[$i]";
+        }
+
+        $excel_body_str .= ");";
+        eval($excel_body_str);
+    }
+
+    // 소계구하기(DETAIL)...YSN
+    function subtot_detail()
+    {
+        // 소계구하기... 준호버젼
+        if($this->sub_flag == 1)
+        {
+            $txtData .= "<tr height=$this->sub_height>\n<td nowrap align=center colspan=$this->subtot_col class=".$this->sub_class[0].">".$this->sub_title[0]."</td>\n";
+            for($m = $this->subtot_col; $m < $this->sub_arg_count; $m++)
+            {
+                if($this->sub_class[$m] == "")  $this->sub_class[$m] = $this->sub_class[0];
+                if($this->td_show[$m] == 'Y' || $this->td_show[$m] == '')
+                {
+                    if($this->td_format_dot[$m] != "")  $td_value = number_format($this->arrSubTot[$m], $this->td_format_dot[$m]);
+                    else                                $td_value = number_format($this->arrSubTot[$m]);
+                    $txtData .= "<td nowrap align=$this->sub_align class=".$this->sub_class[$m].">".$td_value.$this->td_format_str[$m]."</td>\n";
+                }
+                else
+                    $txtData .= "<td nowrap align=$this->sub_align class=".$this->sub_class[$m].">&nbsp;</td>\n";
+            }
+            $txtData .= "</tr>\n";
+
+            $subExecFlag = 1;
+            if($this->excel_fg == 1)    $this->excel_data .= $txtData;
+            echo $txtData;
+            if(isset($this->arrSubTot[$h])){
+              unset($this->arrSubTot[$h]);
+            }
+            $txtData = '';
+        }
+        //소계 끝.
+    }
+
+    function subtot_detailXY()
+    {
+        if($this->sub_flag == 1)
+        {
+            $l_txtData .= "<td nowrap align=center colspan=$this->subtot_col class=".$this->sub_class[0]." $vWidth>".$this->sub_title[0]."</td>\n";
+            for($m = $this->subtot_col; $m < $this->sub_arg_count; $m++)
+            {
+                if($this->sub_class[$m] == "")  $this->sub_class[$m] = $this->sub_class[0];
+                if($m < $this->seperate_col)
+                {
+                    if($this->td_show[$m] == 'Y' || $this->td_show[$m] == '')
+                    {
+                        if($this->td_format_dot[$m] != "")  $td_value = number_format($this->arrSubTot[$m], $this->td_format_dot[$m]);
+                        else                                $td_value = number_format($this->arrSubTot[$m]);
+                        $l_txtData .= "<td nowrap align=$this->sub_align class=".$this->sub_class[$m]." $vWidth >".$td_value.$this->td_format_str[$m]."</td>\n";
+                    }
+                    else
+                        $l_txtData .= "<td nowrap align=$this->sub_align class=".$this->sub_class[$m]." $vWidth >&nbsp;</td>\n";
+                }
+                else
+                {
+                    if($this->td_show[$m] == 'Y' || $this->td_show[$m] == '')
+                    {
+                        if($this->td_format_dot[$m] != "")  $td_value = number_format($this->arrSubTot[$m], $this->td_format_dot[$m]);
+                        else                                $td_value = number_format($this->arrSubTot[$m]);
+                        $r_txtData .= "<td nowrap align=$this->sub_align class=".$this->sub_class[$m]." $vWidth >".$td_value.$this->td_format_str[$m]."</td>\n";
+                    }
+                    else
+                        $r_txtData .= "<td nowrap align=$this->sub_align class=".$this->sub_class[$m]." $vWidth >&nbsp;</td>\n";
+                }
+            }
+            $txtData  .= "<tr height=$this->sub_height>$l_txtData$r_txtData</tr>\n";
+            $l_txtData = "<tr height=$this->sub_height>$l_txtData</tr>\n";
+            $r_txtData = "<tr height=$this->sub_height>$r_txtData</tr>\n";
+
+            $subExecFlag = 1;
+            if($this->excel_fg == 1) $this->excel_data .= $txtData;
+
+            if($this->seperate_col >= 0)
+            {
+                $this->l_str .= $l_txtData;
+                $this->r_str .= $r_txtData;
+            }
+            else
+            {
+                $this->r_str .= $txtData;
+            }
+
+            $txtData = '';
+            $l_txtData = '';
+            $r_txtData = '';
+            unset($this->arrSubTot);
+        }
+    }
+
+    // 전체합계출력 YSN (준호편집)
+    function sumtotal()
+    {
+        $intWidthCnt = 1;
+
+        if(is_array($this->sumtotal) || is_object($this->sumtotal))    // UPDATE-2020.10.21-HEM:sizeof 관련 수정
+        {
+            for($m = $this->subtot_col; $m < sizeof($this->sumtotal); $m++)
+            {
+                $this->total_width[$intWidthCnt] == "" ? $vWidth = "" : $vWidth = "width:".$this->total_width[$intWidthCnt]."px;";
+                if($this->td_show[$m] == 'Y' || $this->td_show[$m] == '')
+                {
+                    // UPDATE-HEM-20201102 : 전체합계에서 값이 공백 또는 ''으로 넘어온 경우는 number_format에서 오류가 발생하여 아래와 같이 수정
+                    if(is_numeric($this->sumtotal[$m]))
+                    {
+                        if($this->td_format_dot[$m] != "")  $td_value = number_format($this->sumtotal[$m], $this->td_format_dot[$m]);
+                        else                                $td_value = number_format($this->sumtotal[$m]);
+                    }
+                    else
+                    {
+                        $td_value = $this->sumtotal[$m];
+                    }
+
+
+                    $txtData .= "<td nowrap style='$vWidth' align=$this->sum_align class=$this->sum_class>".$td_value.$this->td_format_str[$m]."</td>\n";
+                }
+                else
+                    $txtData .= "<td nowrap style='$vWidth' align=$this->sum_align class=$this->sum_class>&nbsp;</td>\n";
+
+                $vExeFlag = 1;
+                $intWidthCnt++;
+            }
+        }
+        if($vExeFlag != 1)
+        {
+            $txtData .= "<td nowrap align=$this->sum_align class=$this->sum_class>&nbsp;</td>";
+        }
+        unset($this->sumtotal);
+
+        if($this->colspan_free == 1) $colspan_str = "colspan=".$this->subtot_col;
+        $exData  = "<tr height='$this->sub_height'><td nowrap style='width:".$this->total_width[0]."px;' align=center colspan=$this->subtot_col class=$this->sum_class>$this->sum_title</td>".$txtData;
+        $txtData = "<tr height=$this->sub_height><td nowrap style='width:".$this->total_width[0]."px;' align=center $colspan_str class=$this->sum_class>$this->sum_title</td>".$txtData;
+
+        if($this->excel_fg == 1) $this->excel_data .= $exData."</tr>";
+        $txtData .= $this->div_append."</tr>";
+        echo $txtData;
+    }
+
+    function sumtotalXY()
+    {
+        $this->total_width[0] == "" ? $vWidth = "" : $vWidth = "width:".$this->total_width[0]."px;";
+        $l_no_txtData = "<td nowrap style='$vWidth' align=center class=$this->sum_class>$this->sum_title</td>\n";
+        $l_ex_txtData = "<td nowrap style='$vWidth' align=center colspan=$this->subtot_col class=$this->sum_class>$this->sum_title</td>\n";
+        $intWidthCnt = 1;
+
+        if(is_array($this->sumtotal) || is_object($this->sumtotal))    // UPDATE-2020.10.21-HEM:sizeof 관련 수정
+        {
+            for($m = $this->subtot_col; $m < sizeof($this->sumtotal); $m++)
+            {
+                $this->total_width[$intWidthCnt] == "" ? $vWidth = "" : $vWidth = "width:".($this->total_width[$intWidthCnt])."px;";
+                if($m < $this->seperate_col)
+                {
+                    if($this->td_show[$m] == 'Y' || $this->td_show[$m] == '')
+                    {
+                        if($this->td_format_dot[$m] != "")  $td_value = number_format($this->sumtotal[$m], $this->td_format_dot[$m]);
+                        else                                $td_value = number_format($this->sumtotal[$m]);
+                        $l_txtData .= "<td nowrap style='$vWidth' align=$this->sum_align class=$this->sum_class>".$td_value.$this->td_format_str[$m]."</td>\n";
+                    }
+                    else
+                        $l_txtData .= "<td nowrap style='$vWidth' align=$this->sum_align class=$this->sum_class>&nbsp;</td>\n";
+                }
+                else
+                {
+                    if($this->td_show[$m] == 'Y' || $this->td_show[$m] == '')
+                    {
+                        if($this->td_format_dot[$m] != "")  $td_value = number_format($this->sumtotal[$m], $this->td_format_dot[$m]);
+                        else                                $td_value = number_format($this->sumtotal[$m]);
+                        $r_txtData .= "<td nowrap style='$vWidth' align=$this->sum_align class=$this->sum_class>".$td_value.$this->td_format_str[$m]."</td>\n";
+                    }
+                    else
+                        $r_txtData .= "<td nowrap style='$vWidth' align=$this->sum_align class=$this->sum_class>&nbsp;</td>\n";
+                }
+                $vExeFlag = 1;
+                $intWidthCnt++;
+            }
+        }
+
+        $txtData  .= "<tr height=$this->sub_height>$l_ex_txtData$l_txtData$r_txtData</tr>\n";
+        $l_txtData = "<tr height=$this->sub_height>$l_no_txtData$l_txtData</tr>\n";
+
+        if ($this->div_flag == "N") //add by OJS 20050328
+        $this->div_append = "";
+        else
+        $this->div_append = "<td nowrap style='padding:0;text-align:center;border-right:0;' width=$this->scroll_width class=$this->sum_class $this->div_script >*</td>\n";
+
+        //if($this->div_script != "") $this->div_append = "<td nowrap width=$this->scroll_width class=$this->sum_class $this->div_script>*</td>\n";
+        //else $this->div_append = "";
+
+        if($this->seperate_col >= 0)
+        {
+            $r_txtData = "<tr height=$this->sub_height>$r_txtData$this->div_append</tr>\n";
+        }
+        else
+        {
+            $r_txtData = "<tr height=$this->sub_height>$l_no_txtData$r_txtData$this->div_append</tr>\n";
+        }
+
+        if($this->excel_fg == 1) $this->excel_data .= $txtData;
+
+        unset($this->sumtotal);
+
+        if($this->seperate_col >= 0)
+        {
+            $this->l_str .= $l_txtData;
+            $this->r_str .= $r_txtData;
+        }
+        else
+        {
+            $this->r_str .= $r_txtData;
+        }
+
+        $txtData = '';
+        $l_txtData = '';
+        $r_txtData = '';
+    }
+
+    function excel_button($argFrm='',$script='', $view_flag='')
+    {
+        if (strlen($argFrm) == 0)
+        {
+            return "<input type=button name=obExcel onclick=excel_view() value='".$this->lang_str[$this->env_LANG]["EXCEL"]."' class=astems-button $script ".$this->EXCEL_DISABLED." $view_flag ".$this->EXCEL_VIEW_FLAG.">";
+        }
+
+        $szFrmName = explode('#',$argFrm);
+
+        for($i=0;$i<count($szFrmName);$i++)
+        {
+            $strScript .= $szFrmName[$i]."_RowData = ".$szFrmName[$i].".document.excel.xls.value;\n";
+            $strRealData .= $szFrmName[$i]."_RowData+'<br><table><tr><td></td></tr></table>'+";
+        }
+
+        $strRealData = substr($strRealData,0,strlen($strRealData)-1);
+
+        $returnScript = "\n<script>\nfunction excel_add()\n{\n$strScript\ndocument.excel.xls.value = $strRealData; \n}\n</script>\n";
+
+        return "<input type=button name=obExcel onclick=\"excel_add();excel_view()\" value='".$this->lang_str[$this->env_LANG]["EXCEL"]."' class=astems-button $script ".$this->EXCEL_DISABLED." $view_flag ".$this->EXCEL_VIEW_FLAG.">"
+               .$returnScript;
+    }
+
+    function excel_data()
+    {
+      if(VAR_OS_VER == 'SV1') $xls_target_nm = 'sp2_oiExcel';
+      else                    $xls_target_nm = 'oiExcel';
+
+      echo "<div style='display:none'>
+            <form name=excel method=post action='/common/php/excel.php3' target='$xls_target_nm'>
+
+            <textarea name=xls style='width:0;height:0;padding:0;border:0'>
+            <table cellpadding=0 cellspacing=0 border='1'>$this->excel_data</table>
+            </textarea>
+            </form><iframe name='$xls_target_nm' src='/iframe.php3' border=0 width=0 height=0 frameborder=0></iframe>
+            </div>\n";
+            //<iframe name='$xls_target_nm' border=0 width=1 height=1></iframe>
+    }
+
+    function excel_reset()
+    {
+        $this->excel_data = "";
+    }
+
+    function fieldset($szValue,$szSize=0)
+    {
+        $fieldset_width = ($szSize == 0) ? ($this->width) : $szSize;
+
+        return "<fieldset class='sub-title' style='width:".($fieldset_width).";text-align:left;'>
+                <span style='border-left: 3px solid #5a816e; margin-right: 8px;'></span>
+                $szValue
+                </fieldset>";
+    }
+
+    function fieldset_left($szValue,$szField=0,$szSize=0)
+    {
+        $fieldset_width      = ($szSize == 0) ? ($this->width-10) : $szSize;
+        $fieldset_left_width = ($szField == 0) ? 20 : $szField;
+
+        return "<fieldset style='padding:2;padding-left:0px;width:".($fieldset_width).";border-left-width:".$fieldset_left_width."px;text-align:left' >$szValue</fieldset>";
+    }
+
+    function Notfound($nCnt, $strTemp = "자료가 없습니다.")
+    {
+        /* 다국어 환경 설정 */
+        if ($this->env_LANG != "KR")
+            $strTemp = $this->lang_str[$this->env_LANG]["NODATA"];
+
+        //$this->width += ($this->width == 966) ? 0 : 0;    // ~~~ ???
+        $this->td_width($this->width-1);
+
+        $this->td_col($nCnt);
+        $this->table_body($this->red_title($strTemp));
+    }
+
+    function red_title($strRed)
+    {
+        return "<font color=red>$strRed</font>";
+    }
+
+    function check_image($event='')
+    {
+        return "<img src=/image/Public_Check.gif border=0 $event>";
+        //return "<input type=checkbox NAME=ALL_CHECK $event>";
+    }
+
+    function p($p_cnt=1)
+    {
+        for ($pi = 0; $pi < $p_cnt; $pi++)
+            echo "<p>";
+
+        echo "\n";
+    }
+
+    function br($br_cnt=1)
+    {
+        for ($br = 0; $br < $br_cnt; $br++)
+            echo "<br>";
+
+        echo "\n";
+    }
+
+    function contents($szContents)
+    {
+        echo "$szContents\n";
+    }
+
+    function arrow($strValue,$color='darkblue')
+    {
+        return "<font color=$color>▶</font> $strValue";
+    }
+
+    function select($DisPlay,$sName,$split='')  // 타이틀, 변수명
+    {
+        global $$sName;
+
+        parseExec($this->sel_query);
+
+        //if ($$sName == '%') $this->sel_like  = "<option value=% selected>전 체</option>\n";
+
+        if ($this->sel_fg == '1' && $$sName == '%')
+            $argReturn = "\n$DisPlay<select name=$sName $this->sel_script $this->sel_style selected>\n<option value='%'>".$this->lang_str[$this->env_LANG]["ALL"]."</option>\n";
+        else if ($this->sel_fg == '1')
+            $argReturn = "\n$DisPlay<select name=$sName $this->sel_script $this->sel_style>\n<option value='%'>".$this->lang_str[$this->env_LANG]["ALL"]."</option>\n";
+        else if ($this->sel_fg == '2')
+            $argReturn = "\n$DisPlay<select name=$sName $this->sel_script $this->sel_style>\n<option value='#'>".$this->lang_str[$this->env_LANG]["SELECT"]."</option>\n";
+        else
+            $argReturn = "\n$DisPlay<select name=$sName $this->sel_script $this->sel_style>\n";
+
+        while($col = fetchinto_assoc())
+        {
+            if ($split != '')
+            {
+                $szTemp = explode($split,$this->sel_array[0]);
+
+                for($i=0;$i<count($szTemp);$i++)
+                {
+                  $sszTemp .= $col[$szTemp[$i]]."#";
+                }
+
+                $sszTemp = substr($sszTemp,0,strlen($sszTemp)-1);
+            }
+            else $sszTemp = $col[$this->sel_array[0]];
+
+            if ($$sName == $sszTemp)
+                $argReturn .= "<option value=".$sszTemp." selected>".$col[$this->sel_array[1]]."</option>\n";
+            else
+                $argReturn .= "<option value=".$sszTemp.">".$col[$this->sel_array[1]]."</option>\n";
+
+            $sszTemp = '';
+        }
+
+        $argReturn .= "</select>\n";
+        parseFree();
+
+        unset($this->sel_script);
+        unset($this->sel_style);
+        unset($this->sel_query);
+        unset($this->sel_array);
+        unset($this->sel_fg);
+        unset($this->sel_like);
+        unset($this->sel_option);
+
+        return $argReturn;
+    }
+
+    function radio($sName,$split='')  // 타이틀, 변수명
+    {
+        global $$sName;
+
+        $arrCnt = count($this->radio_value);
+
+        for($svi = 0; $svi < $arrCnt; $svi++)
+        {
+            $rVal = $this->radio_value[$svi];
+
+            if ($$sName == $rVal)
+                $argReturn .= "<input type=radio name=$sName value='".$this->radio_value[$svi]."' ".$this->radio_script[$svi]." checked>".$this->radio_text[$svi]."\n";
+            else
+                $argReturn .= "<input type=radio name=$sName value='".$this->radio_value[$svi]."' ".$this->radio_script[$svi]."        >".$this->radio_text[$svi]."\n";
+        }
+
+        unset($this->radio_value);
+        unset($this->radio_text);
+
+        return $argReturn;
+    }
+
+    function debug_sql($strSql,$opt=1)
+    {
+        switch ($opt)
+        {
+            case 0:
+                echo "<pre>$strSql</pre>"; exit;
+            case 1:
+                echo "<pre>$strSql</pre>"; break;
+            case 2:
+                echo "<!--<pre>$strSql</pre>-->"; break;
+        }
+    }
+
+    function debug_sql_bind($strSql,$opt=1)
+    {
+        $tmpText = explode("\n", $strSql);
+        $cntText = count($tmpText);
+        for ($i = 0, $strSql = ""; $i < $cntText; $i++)
+        {
+            $lineText = explode("--", $tmpText[$i]);
+            $strSql .= $lineText[0]."\n";
+        }
+
+        $nPnt   = substr_count($strSql,":");
+        $sepStr = explode(":",$strSql);
+        $sign   = ',';
+
+        $search  = array("/[^_a-zA-Z0-9]/i");
+        $replace = array("");
+
+        for ($i=1 ; $i <= $nPnt ; $i++)
+        {
+            $strTmp_sp  = explode(' ',$sepStr[$i]);
+            $strTmp_cm  = explode(',',$strTmp_sp[0]);
+
+            $_EXP_[$i] = preg_replace($search, $replace, $strTmp_cm[0]);
+
+            if ($i == $nPnt) $sign = ';';
+
+            $gParseVar .= " \$".$_EXP_[$i].$sign;
+        }
+
+        eval("global $gParseVar");
+        global $_Z;
+
+        $strBuffer = $strSql;
+        $exp_cnt = count($_EXP_);
+
+        for($i = 1; $i <= $exp_cnt; $i++)
+        {
+            $getStr = substr($_EXP_[$i], 2);
+
+            if (substr_count($_EXP_[$i],"Z_") && array_key_exists("$getStr",$_Z))
+            {
+                $putStr = $_Z[$getStr];
+                $strBuffer = str_replace(":".$_EXP_[$i], "'".$putStr."'", $strBuffer);
+            }
+            else
+                $strBuffer = str_replace(":".$_EXP_[$i], "'".${$_EXP_[$i]}."'", $strBuffer);
+        }
+
+        $this->debug_sql($strBuffer,$opt);
+    }
+}
+?>

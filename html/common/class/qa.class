@@ -1,0 +1,268 @@
+<?
+
+class qa {
+	/* DB 접속 정보 */
+	var $host   = 'localhost';  // 데이터베이스 서버 주소
+	var $myUser = 'jeongeum';        // 데이터베이스 사용자 ID
+	var $myPw   = '1202';  // 데이터베이스 사용자 PASSWD
+	var $myDb   = 'test_db';    // 데이터베이스 명
+	
+	var $title = "";
+	var $idx;
+	var $name;
+	var $date;
+	var $hit;
+	var $content;
+	var $conn;
+	var $sql;
+	var $result;
+	var $rtn;
+	var $re_cont;
+	var $bno;
+	var $fet;
+	var $board;
+	
+	
+	
+	//이미지
+	function qa_list() {
+         $this->conn = mysqli_connect($this->host, $this->myUser, $this->myPw, $this->myDb);
+		
+        if (!$this->conn || mysqli_error($this->conn))
+		{
+			die ('could not connect');
+		}
+		// board테이블에서 idx를 기준으로 내림차순해서 5개까지 표시
+		$this->sql = "select * 
+		                from board 
+			        order by idx desc limit 0,5";
+		$this->sql2 = "select * from reply where con_num = $this->idx";
+		
+		$this->result = mysqli_query($this->conn,$this->sql);
+		
+		if (mysqli_num_rows($this->result) > 0)
+		{
+		    while($row = mysqli_fetch_assoc($this->result))
+			{
+			  $this->title = $row['title']; 
+			  $this->idx = $row['idx'];
+			  $this->name = $row['name'];
+			  $this->date = $row['date'];
+			  $this->hit = $row['hit'];
+			  $this->lock_post = $row['lock_post'];
+			  
+
+              if(strlen($this->title)>30)
+              { 
+                //title이 30을 넘어서면 ...표시
+                $this->title = str_replace($row["title"],mb_substr($row["title"],0,30,"utf-8")."...",$row["title"]);
+              }
+				$this->lockimg = "<img src='../../image/lock.png' alt='lock' title='lock' with='20' height='20' />";
+				$this->rtn .= "<tr>\n";
+				$this->rtn .= "<td width='70'>$this->idx</td>\n";
+				$this->rtn .= "<td width='500'>\n";
+				
+				if($this->lock_post == '1') {
+					$this->rtn .= " <a href='../Login/ck_read.php?idx=$this->idx'>$this->title $this->lockimg";
+				}
+				else {
+					$this->rtn .= " <a href='../Login/read.php?idx=$this->idx'>$this->title";
+				}
+				
+				$this->rtn .= "</a></td>\n";
+				$this->rtn .= "<td width='120'>$this->name</td>\n";
+				$this->rtn .= "<td width='100'>$this->date</td>\n";
+				$this->rtn .= "<td width='100'>$this->hit</td>\n";
+				$this->rtn .= "</tr>\n";
+				
+			
+			}
+			
+		}
+	    else
+	    {
+		     $this->rtn = "테이블에 데이터가 없습니다.";
+	    }
+		
+		
+		
+		
+		mysqli_close($this->conn);
+		
+		return $this->rtn;
+		      
+	}
+	
+	function read() {
+         $this->conn = mysqli_connect($this->host, $this->myUser, $this->myPw, $this->myDb);
+		
+        if (!$this->conn || mysqli_error($this->conn))
+		{
+			die ('could not connect');
+		}
+		
+		$this->bno = $_GET['idx'];
+		$this->fet = "update board set hit = hit+1
+		                         where idx = $this->bno"; //조회수 업데이트
+		
+		$this->sql = "select * from board 
+		                      where idx = $this->bno";
+		$this->result = mysqli_query($this->conn,$this->fet);
+		$this->result= mysqli_query($this->conn,$this->sql);
+		
+			 
+		if (mysqli_num_rows($this->result) > 0)
+		{
+		    while($row = mysqli_fetch_assoc($this->result))
+			{
+		    
+			  $this->title = $row['title']; 
+			  $this->content = $row['content'];
+			  $this->name = $row['name'];
+			  $this->date = $row['date'];
+			  $this->hit = $row['hit'];
+			  $this->idx = $row['idx'];
+			  
+			    $this->rtn .= "<div id='board_read'>\n";
+				$this->rtn .= "<h2>$this->title</h2>\n";
+				$this->rtn .= "<div id='user_info'>\n";
+				$this->rtn .= "$this->name $this->date 조회:$this->hit\n";
+				$this->rtn .= "<div id='bo_line'></div>\n";
+				$this->rtn .= "</div>\n";
+				$this->rtn .= "<div id='bo_content'>\n";
+				$this->rtn .= "$this->content\n";
+				$this->rtn .= "</div>\n";
+				$this->rtn .= "<div id='bo_ser'>\n";
+				$this->rtn .= "<ul>\n";
+				$this->rtn .= "<li><a href='../Login/qa.php'>[목록으로]</a></li>\n";
+				$this->rtn .= "<li><a href='modify.php?idx=$this->idx'>[수정]</a></li>\n";
+				$this->rtn .= "<li><a href='delete.php?idx=$this->idx'>[삭제]</a></li>\n";
+				$this->rtn .= "</ul>\n";
+				$this->rtn .= "</div>\n";
+				$this->rtn .= "</div>\n";
+			}
+		}
+	    else
+	    {
+		     $this->rtn = "테이블에 데이터가 없습니다.";
+	    }
+		
+		
+		
+		
+		mysqli_close($this->conn);
+		
+		return $this->rtn;
+		      
+	}
+		
+		
+		
+		function modify() {
+		$this->conn = mysqli_connect($this->host, $this->myUser, $this->myPw, $this->myDb);
+		
+        if (!$this->conn || mysqli_error($this->conn))
+		{
+			die ('could not connect');
+		}
+		
+			$this->bno = $_GET['idx'];
+	        $this->sql = "select * from board where idx = $this->bno";
+		
+		    $this->result = mysqli_query($this->conn,$this->sql);
+			
+		if (mysqli_num_rows($this->result) > 0)
+		{
+		    while($row = mysqli_fetch_assoc($this->result))
+			{
+			  $this->title = $row['title']; 
+			  $this->name = $row['name'];
+			  $this->content = $row['content'];
+			  
+			  
+                $this->rtn .= "<form method = 'post' action = 'modify_action.php?idx=$this->bno'>\n";
+				$this->rtn .= "<table><tr><td height=20 align=center bgcolor=#ccc><font color=white>글 수정하기</font></td></tr>\n";
+				$this->rtn .= "<tr><td bgcolor=white><table class='table2'>\n";
+				$this->rtn .= "<tr><td>제목</td><td><input type='text' name='title' size=60 value='$this->title'></td></tr>\n";
+				$this->rtn .= "<tr><td>작성자</td><td><input type='text' name='name' size=60 value='$this->name'></td></tr>\n";
+				$this->rtn .= "<tr><td>내용</td><td><textarea name='content' cols=85 rows=15 >$this->content</textarea></td></tr>\n";
+				$this->rtn .= "<tr><td>이미지</td><td><input type='file' name='file' accept='image'></td></tr>\n";
+				$this->rtn .= "<tr><td>비밀번호</td><td><input type='password' name='pw' id='upw'  placeholder='비밀번호' required /></td></tr>\n";
+				$this->rtn .= "</div>\n";
+				$this->rtn .= "<div id='bo_ser'>\n";
+				$this->rtn .= "</table><center><input type='submit' value='올리기'></center></td></tr></table></form>\n";
+				$this->rtn .= "<a href='../Login/qa.php'>[목록으로]</a>\n";
+
+				
+			}
+		}
+	    else
+	    {
+		     $this->rtn = "테이블에 데이터가 없습니다.";
+	    }
+		mysqli_close($this->conn);
+		
+		return $this->rtn;
+		}
+		
+		
+	function reply() {
+         $this->conn = mysqli_connect($this->host, $this->myUser, $this->myPw, $this->myDb);
+		
+        if (!$this->conn || mysqli_error($this->conn))
+		{
+			die ('could not connect');
+		}
+		
+		$this->bno = $_GET['idx'];
+		$this->sql = "select * from reply 
+		                      where con_num = $this->bno
+							  order by idx desc";
+							  
+		$this->result= mysqli_query($this->conn,$this->sql);
+		
+			 
+		if (mysqli_num_rows($this->result) > 0)
+		{
+		    while($row = mysqli_fetch_assoc($this->result))
+			{
+			  $this->name = $row['name'];
+			  $this->content = $row['content'];
+			  $this->date = $row['date'];
+			  $this->idx = $row['idx'];
+			  
+			  
+			    $this->rtn .= "<div><b>$this->name</b></div>\n";
+				$this->rtn .= "<div class='dap_to comt_edit'>$this->content</div>\n";
+				$this->rtn .= "<div class='rep_me dap_to'>$this->date</div>\n";
+				$this->rtn .= "<div class='rep_me rep_menu'>\n";
+				$this->rtn .= "<a class='dat_edit_bt' href='#'>수정</a>\n";
+				$this->rtn .= "<a class='dat_delete_bt' href='#'>삭제</a></div>\n";
+            
+				
+			}	
+				
+				
+				
+			
+		}
+	    else
+	    {
+		     $this->rtn = "";
+	    }
+		
+		
+		
+		
+		mysqli_close($this->conn);
+		
+		return $this->rtn;
+		      
+	}	
+	
+}
+?>
+
+
+ 
+

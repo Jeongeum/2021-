@@ -1,0 +1,47 @@
+<html lang="ko"> 
+<head>
+  <meta charset="UTF-8">
+  <title>test</title>
+  <link rel="stylesheet" href="../../css/popup.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <!-- jQuery 라이브러리 참조 -->
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+  
+  <!-- plugin 참조 -->
+  <script type="text/javascript" src="plugins/cookie/jquery.cookie.js"></script>
+  <!--// plugin 참조 -->
+    
+    
+  <script>
+	$(document).ready(function(){
+			
+		// 닫기 버튼 클릭시
+		$("#close").click(function(){
+			// 링크의 페이지 이동 속성 강제 차단
+			event.preventDefault();
+			 
+			if ($('#nopopup').is(":checked")){
+				// 쿠키값을 "Y"로 하여 하루동안 저장시킴
+				$.cookie("nopopup", "Y", {
+					expires : 1
+				});
+			}
+			
+			// 팝업창 닫기
+			self.close();
+		});
+	});
+  </script>
+
+ </head>
+ <body>
+        <div class="pop_lay">
+            <img src ="../../image/popup.jpg"></img>
+            <div class="footer">
+                <label for="nopopup"> 오늘 하루 이 창 열지 않음 </label>
+                <input type="checkbox" id="nopopup">
+                <a href="#" id="close">닫기</a>
+            </div>  
+        </div>
+ </body>
+</html>

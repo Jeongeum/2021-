@@ -1,0 +1,127 @@
+<?
+
+class notice {
+	/* DB 접속 정보 */
+	var $host   = 'localhost';  // 데이터베이스 서버 주소
+	var $myUser = 'jeongeum';        // 데이터베이스 사용자 ID
+	var $myPw   = '1202';  // 데이터베이스 사용자 PASSWD
+	var $myDb   = 'test_db';    // 데이터베이스 명
+	
+	var $path;
+	var $name;
+	var $img = "";
+	var $title = "";
+	var $cont = "";
+	var $full = "";
+	var $conn;
+	var $sql;
+	var $sql0;
+	var $sql2;
+	var $sql3;
+	var $result;
+	var $total_record;
+	var $notice="";
+	var $rtn;
+	
+	var $title_w="";
+    var $content="";
+    var $file="";
+	
+	//이미지
+	function img_up() {
+         $this->conn = mysqli_connect($this->host, $this->myUser, $this->myPw, $this->myDb);
+		
+        if (!$this->conn || mysqli_error($this->conn))
+		{
+			die ('could not connect');
+		}
+		
+		
+		
+		$this->sql = "SELECT path,
+                             name,
+                             title,
+                             cont				   
+                       FROM notice1 
+			           ORDER BY time desc";
+			
+			 $this->result = mysqli_query($this->conn,$this->sql);
+			 
+		if (mysqli_num_rows($this->result) > 0)
+		{
+		    while($row = mysqli_fetch_assoc($this->result))
+			{
+				$this->path = $row['path'];
+		        $this->name = $row['name'];
+				$this->title1 = $row['title'];
+				$this->cont1 = $row['cont'];
+				
+				$this->rtn .= "<li><div class='image'>\n";
+				$this->rtn .= "<a href=#><img src='$this->path//$this->name'></a>\n";
+				$this->rtn .= "</div><div class='title' style='float:left;'><a href='#'>\n";
+				$this->rtn .= "<h2>$this->title1</h2>\n";
+				$this->rtn .= "</div><div class='text' style='float:left;'>\n";
+				$this->rtn .= "<p>$this->cont1</p>\n";
+				$this->rtn .= "</a></div></li><hr style='border: 0; border-top: 1px solid #e1e1e1; height: 1px; margin-bottom: 0; width: 80%; float: left;'><br>\n";
+				
+			}
+		}
+	    else
+	    {
+		     $this->rtn = "테이블에 데이터가 없습니다.";
+	    }
+		
+		mysqli_close($this->conn);
+		
+		return $this->rtn;
+		      
+	}
+	
+	function write() {
+		$this->title_w = $_POST['title']; 
+		$this->content = $_POST['content'];
+		$this->file = $_POST['file'];		
+					
+		$this->conn = mysqli_connect($this->host, $this->myUser, $this->myPw, $this->myDb);
+
+        if (!$this->conn || mysqli_error($this->conn))
+		{
+			die ('could not connect');
+		}
+		$this->sql = "INSERT INTO notice1 (no, path, name, title, cont, time)
+                    values ( null , '../../image','$this->file' , '$this->title_w' , '$this->content' , CURRENT_TIMESTAMP())";
+			
+			 $this->result = mysqli_query($this->conn,$this->sql);
+			 
+		if ($this->result)
+		{
+			if($this->title_w == $_POST['title'])
+			{
+				echo '<script>
+				alert("finish!");
+				location.replace("./notice.php");
+				</script>';
+			}
+			else {
+				echo '<script>
+				alert("test");
+				history.back();
+				</script>';
+				}
+		}
+	    
+		
+		if($result === false)
+{
+    echo mysqli_error($conn);
+}
+/* DB 종료 */
+mysqli_close($conn);
+	}
+	
+}
+?>
+
+
+ 
+

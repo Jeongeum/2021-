@@ -1,0 +1,223 @@
+<?
+
+?>
+
+<html>
+<head>
+  <title>main0716</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="../../main.css">
+  <link href="https://fonts.googleapis.com/earlyaccess/notosanskr.css" rel="stylesheet">
+
+<style type="text/css">
+  a:link { color: #777; text-decoration: none;}
+ a:visited { color: #777; text-decoration: none;}
+ a:hover { color: #777; text-decoration: underline;}
+</style>
+
+  <script language="javascript">
+    function fn_list1() {
+      frm.action = '../../day.html';
+    }
+    function fn_list2() {
+      frm.action = '../../week.html';
+    }
+  </script>
+</head>
+
+<body>
+<header>
+
+</header>
+<nav>
+<ul class="bar">
+  <li><a href="#">home</a></li>
+  <li><a href="#">menu1</a>
+    <ul class="sub">
+      <li><a href="#">sub menu1</a></li>
+      <li><a href="#">sub menu2</a></li>
+      <li><a href="#">sub menu3</a></li>
+    </ul></li>
+  <li><a href="#">menu2</a>
+        <ul class="sub">
+          <li><a href="#">sub menu1</a></li>
+          <li><a href="#">sub menu2</a></li>
+          <li><a href="#">sub menu3</a></li>
+        </ul>
+  </li>
+  <li><a href="#">menu3</a>
+    <ul class="sub">
+      <li><a href="#">sub menu1</a></li>
+      <li><a href="#">sub menu2</a></li>
+    </ul></li>
+</ul>
+</nav>
+
+<div class="main">
+<section id="left">
+  <p><b> 소개 </b></p>
+  <p>안녕하세요. 오늘은 메인 홈페이지 만들기를 해보았습니다. <br>
+    오랜만에 만들어서 메뉴바 만드는데만 해도 오래걸렸지만,
+  웹 페이지 만드는건 너무 재미있습니다. <br>
+  다음번에는 게시판도 만들어보고 싶습니다. DB랑 연결도 해보고요! <br>
+저는 친구들만 보는 블로그를 하는데요. 실습때에는 실습내용을 올리기도 합니다. <br>
+제 블로그에서 주간/일간 조회 수 가장 높은 게시물 BEST 5 소개해 드릴게요. 블로그 틈새홍보입니다. <br>감사합니다.</p>
+<div style="width:50%; height:300px; float:left;">
+<p><b>" 일간 BEST 5 "</b></p>
+ <table class="tables">
+<thead>
+  <tr>
+  <th scope="col">순위</th>
+  <th scope="col" width="">제목</th>
+  <th scope="col">조회</th>
+</tr>
+</thead>
+<tbody>
+  <tr>
+  <td>1</td>
+  <td>[현장실습]2021 하계 2주8일차 - HTML과 CSS를 이용...</td>
+  <td>3</td>
+  </tr>
+
+  <tr>
+  <td>2</td>
+  <td>[현장실습]1주차 기록</td>
+  <td>2</td>
+  </tr>
+
+  <tr>
+  <td>3</td>
+  <td>[졸업작품] 우분투에서 이더리움으로 간단한 상품관리 ...</td>
+  <td>1</td>
+  </tr>
+
+  <tr>
+  <td>3</td>
+  <td>[현장실습]2021 하계 2주6일차 - PHP와 DB를 이용...</td>
+  <td>1</td>
+  </tr>
+
+  <tr>
+  <td>3</td>
+  <td>[현장실습]2021 하계 2주6일차 - PHP와 DB를 이용...</td>
+  <td>1</td>
+  </tr>
+  </tbody>
+  </table>
+</div>
+
+<div style="width:50%; height:300px; float:right;">
+<p><b>" 주간 BEST 5 "</b></p>
+ <table class="tables">
+<thead>
+  <tr>
+  <th scope="col">순위</th>
+  <th scope="col" width="">제목</th>
+  <th scope="col">조회</th>
+</tr>
+</thead>
+<tbody>
+  <tr>
+  <td>1</td>
+  <td>떨리는 일요일</td>
+  <td>12</td>
+  </tr>
+
+  <tr>
+  <td>2</td>
+  <td>[현장실습]2021 하계 1주1일차 - 컨버전을 위한 사전...</td>
+  <td>8</td>
+  </tr>
+
+  <tr>
+  <td>3</td>
+  <td>6/3 오늘일기 블챌 마지막!</td>
+  <td>4</td>
+  </tr>
+
+  <tr>
+  <td>3</td>
+  <td>너무 행복해서 적는 어느 토요일</td>
+  <td>4</td>
+  </tr>
+
+  <tr>
+  <td>3</td>
+  <td>[현장실습]2021 하계 1주4일차 - PHP 시큐어 코딩에...</td>
+  <td>4</td>
+  </tr>
+  </tbody>
+  </table>
+  </div>
+
+<br><p><b>최근 게시물</b></p>
+  <ul class="mvlist">
+  <li><a href="#"><img src="../../post1.png"><span>21시간 전</span></a><br>
+  <a href="#"><span>[현장 실습]2021 하계 2주9일차 - 테이블 이해하기</span></a></li>
+
+  <li><a href="#"><img src="../../post2.png"><span>21-07-15</span></a><br>
+  <a href="#"><span>[현장 실습]2021 하계 2주8일차 - HTML과 CSS를 이용하여 로그인 페이지 만들기</span></a></li>
+
+  <li><a href="#"><img src="../../post3.png"><span>21-07-15</span></a><br>
+  <a href="#"><span>[현장 실습]2021 하계 2주7일차 - PHP와 DB를 이용하여 사용자 정보 저장+조회 응용하기 2 </span></a></li>
+
+  <li><a href="#"><img src="../../post4.png"><span>21-07-12</span></a><br>
+  <a href="#"><span>[현장 실습]2021 하계 2주6일차 - PHP와 DB를 이용하여 사용자 정보 저장+조회 응용하기 (input박스에 값 출력하기) </span></a></li>
+  </ul>
+  </section>
+
+<section id="right">
+      <article>
+        <p><b> My favorite artist </b></p>
+      <iframe width="100%" height="315" src="https://www.youtube.com/embed/tCraTquoTMU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </article>
+        <div class="notice">
+      	  <p><b>  Notice </b></p>
+      	 <ul>
+      		<li>
+      			<span class="txt">
+      			<span class="dot"></span>
+      			<a href="#">[공지사항]안녕하세요. 공지사항입니다.</a></span>
+      			<span class="date">2021-07-16</span>
+      		</li>
+      		<li>
+      			<span class="txt">
+      			<span class="dot"></span>
+      			<a href="#">[안내]안녕하세요. 안내입니다.</a></span>
+      			<span class="date">2021-07-16</span>
+      		</li>
+      		<li>
+      			<span class="txt">
+      			<span class="dot"></span>
+      			<a href="#">게시판처럼 만들어봤습니다.</a></span>
+      			<span class="date">2021-07-16</span>
+      		</li>
+      		<li>
+      			<span class="txt">
+      			<span class="dot"></span>
+      			<a href="#">누르면 게시판으로 이동하는 방식입니다.</a></span>
+      			<span class="date">2021-07-16</span>
+      		</li>
+      		<li>
+      			<span class="txt">
+      			<span class="dot"></span>
+      			<a href="#">경로설정은 안해놨어요.</a></span>
+      			<span class="date">2021-07-16</span>
+      		</li>
+      	</ul>
+        </div> <!--notice-->
+        <article>
+          <p><b> My SNS </b></p>
+          <a href="#"><img src="../../ins.png" width="40px;" height="40px;" align="middle">INSTAGRAM</a> / <a href="#"><img src="../../blog.png" width="30px;" height="30px;" align="middle"> NAVER BLOG</a>
+          </article>
+</section>
+          </div>
+          <footer>
+            <div>
+              <span>만든이 : 호서대학교 컴퓨터공학부</span> <span> | </span>
+              <span> 20181194 안정음 </span> <span> | </span>
+
+            </div>
+          </footer>
+</body>
+</html>
