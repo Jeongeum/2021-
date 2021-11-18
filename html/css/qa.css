@@ -1,0 +1,185 @@
+* {
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+ a:link { color: #777; text-decoration: none;}
+ a:visited { color: #777; text-decoration: none;}
+ a:hover { color: #777; text-decoration: underline;}
+
+h1 {
+  
+  margin: 20px 0;
+}
+
+
+a {
+	text-decoration: none;
+	color:#333;
+}
+ul li {
+	list-style:none;
+}
+
+/* 공통 */
+.fl {
+	float:left;
+}
+.tc {
+	text-align:center;
+}
+
+/* 게시판 목록 */
+#board_area {
+	width: 900px;
+	position: relative;
+	margin : 100px auto;
+}
+.list-table {
+	margin-top: 40px;
+}
+.list-table thead th{
+	height:40px;
+	border-top:2px solid #DAAC98;
+	border-bottom:1px solid #CCC;
+	font-weight: bold;
+	font-size: 17px;
+}
+.list-table tbody td{
+	text-align:center;
+	padding:10px 0;
+	border-bottom:1px solid #CCC; height:20px;
+	font-size: 14px 
+}
+#write_btn {
+	position: absolute;
+	margin-top:20px;
+	right: 0;
+}
+
+
+/*read css*/
+
+#board_read {
+	width:900px;
+	position: relative;
+	word-break:break-all;
+	margin : 100px auto;
+}
+#user_info {
+	font-size:14px;
+}
+#user_info ul li {
+	float:left;
+	margin-left:10px;
+}
+#bo_line {
+	width:880px;
+	height:2px;
+	background: #DAAC98;
+	margin-top:20px;
+}
+#bo_content {
+	margin-top:20px;
+}
+#bo_ser {
+	font-size:14px;
+	color:#333;
+	position: absolute;
+	right: 0;
+}
+#bo_ser > ul > li {
+	float:left;
+	margin-left:10px;
+}
+
+/* 댓글 */
+.main {
+	width: 100%;
+  height: 100%;
+    overflow: auto;
+	margin: 10px 40px;
+}
+.reply_view {
+	width:900px;
+	margin:100px auto; 
+	word-break:break-all;
+}
+.dap_lo {
+	font-size: 14px;
+	padding:10px 0 15px 0;
+	border-bottom: solid 1px gray;
+}
+.dap_to {
+	margin-top:5px;
+}
+.rep_me {
+	font-size:12px;
+}
+.rep_me ul li {
+	float:left;
+	width: 30px;
+}
+.dat_delete {
+	display: none;
+}	
+.dat_edit {
+	display:none;
+}
+.dap_sm {
+	position: absolute;
+	top: 10px;
+}
+.dap_edit_t{
+	width:520px;
+	height:70px;
+	position: absolute;
+	top: 40px;
+}
+.re_mo_bt {
+	position: absolute;
+	top:40px;
+	right: 5px;
+	width: 90px;
+	height: 72px;
+}
+#re_content {
+	width:700px;
+	height: 56px; 
+	float: left;
+}
+.dap_ins {
+	margin: 100px auto;
+}
+.re_bt {
+	position: initial;
+	width:100px;
+	height:56px;
+	font-size:16px;
+	margin-left: 10px; 
+}
+#foot_box {
+	height: 50px; 
+}
+
+
+/*페이징*/
+#page_num {
+	font-size: 14px;
+	margin-left: 260px;
+	margin-top:30px; 
+}
+#page_num ul li {
+	float: left;
+	margin-left: 10px; 
+	text-align: center;
+}
+.fo_re {
+	font-weight: bold;
+	color:gray;
+}
+
+#writepass {
+	margin : 350px 500px;
+}

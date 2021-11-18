@@ -1,0 +1,343 @@
+* {
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+h1 {
+  font-family: 'Patua One', cursive;
+  margin: 20px 0;
+}
+
+li::marker {
+  color : #ababab;
+}
+
+hr {
+	border: 0;
+    border-top: 3px solid #e1e1e1;
+    height: 1px;
+    margin-bottom: 0;
+	width : 80%;
+}
+
+
+.main {
+   width: 100%;
+  height: 100%;
+    overflow: auto;
+	margin: 10px 40px;
+}
+
+.top_img {
+	height : 700px;
+	background-image : url("../image/top.jpg");
+	background-size : cover;
+	background-position : center center;
+}
+
+.slide2{
+	height:100%;
+	overflow:hidden;
+	margin-bottom : 20px;
+	}
+
+    .slide2 ul{
+		width:calc(100% * 4);
+		display:flex; 
+	padding : 0; 
+	animation:slide 8s infinite; 
+	list-style:none;
+	} /* slide를 8초동안 진행하며 무한반복 함 */
+	
+    .slide2 li{width:calc(100% / 4);height:350px; list-style:none;}
+    .slide2 li:nth-child(1){background:#fff;}
+    .slide2 li:nth-child(2){background:#fff;}
+    .slide2 li:nth-child(3){background:#fff;}
+    .slide2 li:nth-child(4){background:#fff;}
+	
+	.slide2 li img {
+		display:block;
+		margin-left:auto;
+		margin-right:auto;
+	}
+	
+    @keyframes slide {
+      0% {margin-left:0;} /* 0 ~ 10  : 정지 */
+      10% {margin-left:0;} /* 10 ~ 25 : 변이 */
+      25% {margin-left:-100%;} /* 25 ~ 35 : 정지 */
+      35% {margin-left:-100%;} /* 35 ~ 50 : 변이 */
+      50% {margin-left:-200%;}
+      60% {margin-left:-200%;}
+      75% {margin-left:-300%;}
+      85% {margin-left:-300%;}
+      100% {margin-left:0;}
+    }
+
+.main > #top {
+  float : top;
+  height : 400px;
+  margin : 10px 40px;
+}
+
+#img {
+	float:left;
+	margin-top : 25px;
+	margin-right : 30px;
+	width : 40%;
+}
+
+
+img{
+	display: block;
+    height: auto;
+    max-width: 100%;
+}
+.text {
+	float:left;
+	width : 55%;
+}
+
+.main #middle {
+	float:middle;
+	width : 100%;
+  height : 400px;
+}
+
+.btn_left {
+	float : left;
+	margin-top : 7px;
+	padding-left: 75px;
+}
+
+.btn_right {
+	float : right;
+	margin-top: -24px;
+	margin-right: 75px;
+}
+
+#button1 {
+
+    width:60px;
+	
+	height:30px;
+
+    background-color: #A6A6A6;
+
+    border: none;
+	
+	border-radius:10px;
+
+    color:#fff;
+
+    text-align: center;
+
+    text-decoration: none;
+
+    display: inline-block;
+
+    font-size: 15px;
+
+    margin: 4px;
+
+    cursor: pointer;
+
+}
+
+#button2 {
+
+    width:60px;
+
+	height:30px;
+	
+    background-color: #A6A6A6;
+
+    border: none;
+	
+	border-radius:10px;
+
+    color:#fff;
+
+    text-align: center;
+
+    text-decoration: none;
+
+    display: inline-block;
+
+    font-size: 15px;
+
+    margin: 4px;
+
+    cursor: pointer;
+
+}
+
+
+span {
+	margin-left : 10px;
+	margin-right : 10px;
+}
+
+
+
+.slide{
+	height:350px;
+	overflow:hidden;
+	margin-bottom : 20px;
+	}
+
+    .slide ul{
+		width:calc(100% * 4);
+		display:flex; 
+	padding : 0; 
+	animation:slide 8s infinite; 
+	list-style:none;
+	} /* slide를 8초동안 진행하며 무한반복 함 */
+	
+    .slide li{width:calc(100% / 4);height:350px; list-style:none;}
+    .slide li:nth-child(1){background:#fff;}
+    .slide li:nth-child(2){background:#fff;}
+    .slide li:nth-child(3){background:#fff;}
+    .slide li:nth-child(4){background:#fff;}
+	
+	.slide li img {
+		display:block;
+		margin-left:auto;
+		margin-right:auto;
+	}
+	
+    @keyframes slide {
+      0% {margin-left:0;} /* 0 ~ 10  : 정지 */
+      10% {margin-left:0;} /* 10 ~ 25 : 변이 */
+      25% {margin-left:-100%;} /* 25 ~ 35 : 정지 */
+      35% {margin-left:-100%;} /* 35 ~ 50 : 변이 */
+      50% {margin-left:-200%;}
+      60% {margin-left:-200%;}
+      75% {margin-left:-300%;}
+      85% {margin-left:-300%;}
+      100% {margin-left:0;}
+    }
+
+/**/
+
+
+
+#video {
+  width:100%;
+  height: 350px;
+  padding: 20px 20px;
+  align-items: center;
+}
+
+.video_set {
+	width:50%;
+	float : left;
+	padding : 0 20px;
+}
+
+
+/*팝업창 css*/
+
+#popup_layer {
+	position:fixed;
+	top:0;
+	left:0;
+	z-index: 10000; 
+	width: 100%; 
+	height: 100%; 
+	background-color: rgba(0, 0, 0, 0.4);
+	} 
+	
+/*팝업 박스*/
+.popup_box{
+	position: relative;
+	top:50%;
+	left:50%; 
+	width:550px;
+	transform:translate(-50%, -50%);
+	z-index:1002;
+	box-sizing:border-box;
+	background:#fff;
+	box-shadow: 2px 5px 10px 0px rgba(0,0,0,0.35);
+	-webkit-box-shadow: 2px 5px 10px 0px rgba(0,0,0,0.35);
+	-moz-box-shadow: 2px 5px 10px 0px rgba(0,0,0,0.35);
+	}
+	
+/*컨텐츠 영역*/
+.popup_box .popup_cont {
+	padding:50px;
+	line-height:1.4rem;
+	font-size:14px;
+	word-break: break-word;
+	}
+
+/*버튼영역*/
+.popup_box .popup_btn {
+	display:table;
+	table-layout: fixed;
+	width:100%;
+	height:70px;
+	background:#5d5d5d;
+	word-break: break-word;
+	}
+	
+.popup_box .popup_btn a {
+	position: relative; 
+	display: table-cell; 
+	height:70px; 
+	color:#000; 
+	font-size:17px;
+	text-align:center;
+	vertical-align:middle;
+	text-decoration:none; 
+	background:#fff;
+	}
+	
+.popup_box .popup_cont a:before{
+	content:'';
+	display:block;
+	position:absolute;
+	top:26px;
+	right:29px;
+	width:1px;
+	height:21px;
+	background:#000;
+	-moz-transform: rotate(-45deg); 
+	-webkit-transform: rotate(-45deg); 
+	-ms-transform: rotate(-45deg); 
+	-o-transform: rotate(-45deg); 
+	transform: rotate(-45deg);
+	}
+	
+.popup_box .popup_cont a:after{
+	content:'';display:block;
+	position:absolute;
+	top:26px;
+	right:29px;
+	width:1px;
+	height:21px;
+	background:#000;
+	-moz-transform: rotate(45deg); 
+	-webkit-transform: rotate(45deg); 
+	-ms-transform: rotate(45deg); 
+	-o-transform: rotate(45deg); 
+	transform: rotate(45deg);
+	}
+
+.popup_box .popup_btn a.close_day {
+	background:#5d5d5d;
+	}
+	
+.popup_box .popup_btn a.close_day:before, .popup_box .popup_btn a.close_day:after{
+	display:none;
+	}
+/*오버레이 뒷배경*/
+.popup_overlay{
+	position:fixed; /*홈페이지 움직여도 팝업창은 그대로 떠있음*/
+	top:0px;
+	right:0;
+	left:0;
+	bottom:0;
+	z-index:1001;
+	background:rgba(0,0,0,0.5);
+	}    

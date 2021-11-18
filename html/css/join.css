@@ -1,0 +1,60 @@
+* {
+  box-sizing: border-box;
+  font-family: 'Noto Sans KR', sans-serif;
+  border-radius: 5px;
+}
+
+body {
+  background-image: url('../../sky.jpg');
+  background-repeat: no-repeat;
+  background-size : cover;
+}
+
+.join-form {
+width: 400px;
+background-color: #EEEFF1;
+margin-right: auto;
+margin-left: auto;
+margin-top: 150px;
+padding: 20px;
+text-align: center;
+border: none;
+}
+
+.text-field {
+      font-size: 14px;
+      padding: 10px;
+      border: none;
+      width: 260px;
+      margin-bottom: 10px;
+
+}
+
+.submit-btn1 {
+  font-size: 14px;
+  border: none;
+  padding: 10px;
+  width: 120px;
+  background-color: #979899;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.submit-btn2 {
+  font-size: 14px;
+  border: none;
+  padding: 10px;
+  width: 120px;
+  background-color: #8A6AB0;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.links {
+    text-align: right;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #9B9B9B;
+}

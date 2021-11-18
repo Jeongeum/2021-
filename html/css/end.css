@@ -1,0 +1,83 @@
+* {
+  box-sizing: border-box;
+  text-decoration: none;
+  list-style:none;
+  font-family: 'Noto Sans KR', sans-serif;
+  color : #000;
+}
+
+h1 {
+  font-family: 'Patua One', cursive;
+  margin: 20px 0;
+}
+
+h2 {
+	    float: left;
+	    margin: 15px;
+}
+
+li::marker {
+  color : #ababab;
+}
+
+hr {
+	border: 0;
+	border-top: 3px solid #e1e1e1;
+	height: 1px;
+	margin-bottom: 0;
+	width: 80%;
+	float: left;
+}
+
+
+.main {
+  width: 100%;
+  height: 100%;
+    overflow: auto;
+	margin: 10px 40px;
+}
+
+
+
+.mvlist {
+overflow: hidden;
+    position: relative;
+    width: 100%;
+	/*padding-left : 40px;*/
+	padding-right : 40px;
+	}
+
+
+
+.list {
+	position: relative;
+	padding-right: 15px;
+    padding-left: 15px;
+	overflow : hidden;
+	padding-bottom : 40px;
+	float : left;
+	width: 33%;
+	
+}
+
+.image {
+	display: block;
+    height: auto;
+    max-width: 100%;
+}
+
+.image img {
+	vertical-align : middle;
+	display: block;
+    height: auto;
+    max-width: 100%;
+}
+
+.title {
+font-size : 13px;
+padding : 10px;
+}
+
+.text {
+	font-size : 12px;
+}
