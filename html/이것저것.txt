@@ -1,0 +1,218 @@
+$sql = "INSERT INTO notice1 values ( 5 , '../../image ','35e7c291821b1c5a5b80c5a2339a154f.jpg' , '6월 석파정 휴관 안내' , '*석파정 휴관안내* 내부 행사 일정으로 인하여 상기 날짜에 석파정 휴관을 진행합니다.
+		미술관은 정상 운영하며, 100% 사전예약제로 진행되어 네이버를 통해 예약 후 방문 부탁드립니다.
+		(예약링크>>https://booking.naver.com/6/bizes/496735) 해당 일 관람 하시지 못...' , '2021-06-03' )";
+
+$sql = "INSERT INTO notice1 values ( 4 , '../../image ','e9dfb5df72b3aad779cda6d442ed93b1.jpg' , '석파정 휴관 안내' , '<석파정 휴관안내> 금주 금요일 4월 9일 석파정 보수 공사로 인하여 휴관합니다. 미술관은 정상 운영합니다. 
+      ※ 미술관 관람은 사전 예약제로 운영됩니다.[전시 관람 사전 예약]https://booking.naver.com/booking/6/bizes/496735' , '2021-04-03' )";
+
+$sql = "INSERT INTO notice1 values ( 3 , '../../image ','18f5f00c43a9d76758f28045a969520b.jpg' , '[EVENT]동물의 숲에서 미술관 소장품을 만나보세요' , '신축년 EVENT 서울미술관 소장품을 동물의 숲에서 만나보세요!
+      한국을 대표하는 근현대 화가의 작품을 내방에 장식해 보아요.
+      총 6점의 서울미술관 소장품의 마이디자인 QR 코드를 공유합니다.
+      -이중섭, 황소, 1954년경 -김환기, 십만개의 점, 1973년 -이우환, 선에서, 197...' , '2021-02-13' )";
+
+$sql = "INSERT INTO notice1 values ( 2 , '../../image ','95f737c60578909bbb3b1cb8e80bc2f2.jpg' , '석파정 서울미술관 휴관일 안내 (2월 12일 금요일)' , '[휴관안내] 2월 12일 금요일-석파정 서울미술관은 2월 12일 금요일 설날 휴관을 진행합니다.
+      그 어느때 보다 따뜻하고 건강한 설 연휴를 보내시길 바랍니다. SEOULMUSEUM' , '2021-02-01' )";
+
+$sql = "INSERT INTO notice1 values ( 1 , '../../image ','a53c4148d72c1fca40abb91c01e994f4.jpg' , '석파정 서울미술관 휴관일 안내(8월 3일~11일)' , '석파정 서울미술관은 안전 설비 점검 및 공사 / 전관 소독 및 점검으로 8월 3일 부터 11일 (9일간) 까지 전체 휴관을 진행합니다.큰 양해 부탁드리겠습니다. 더 나은 모습으로 관람객 여러분을 맞이하기 위해 노력하는 서울미술관이 되겠습니다! SEOULMUSEUM' , '2020-08-01' )";
+
+INSERT INTO notice1 values ( 6 , '../../image ','35e7c291821b1c5a5b80c5a2339a154f.jpg' , '6월 석파정 휴관 안내 test' , '*석파정 휴관안내* 내부 행사 일정으로 인하여 상기 날짜에 석파정 휴관을 진행합니다. 미술관은 정상 운영하며, 100% 사전예약제로 진행되어 네이버를 통해 예약 후 방문 부탁드립니다. (예약링크>>https://booking.naver.com/6/bizes/496735) 해당 일 관람 하시지 못...' , '2021-06-03' )";
+
+INSERT INTO notice1 (no, path, name, title, cont, time) values ( null , '../../image ','c7f0e8b79c9de24fbe652d29d7edb2a5.jpg' , '6월 석파정 휴관 안내' , '*석파정 휴관안내* 내부 행사 일정으로 인하여 상기 날짜에 석파정 휴관을 진행합니다. 미술관은 정상 운영하며, 100% 사전예약제로 진행되어 네이버를 통해 예약 후 방문 부탁드립니다. (예약링크>>https://booking.naver.com/6/bizes/496735) 해당 일 관람 하시지 못...' , '2021-06-03' )
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+기존 my.ini
+
+# Example MySQL config file for small systems.
+#
+# This is for a system with little memory (<= 64M) where MySQL is only used
+# from time to time and it's important that the mysqld daemon
+# doesn't use much resources.
+#
+# You can copy this file to
+# C:/xampp/mysql/bin/my.cnf to set global options,
+# mysql-data-dir/my.cnf to set server-specific options (in this
+# installation this directory is C:/xampp/mysql/data) or
+# ~/.my.cnf to set user-specific options.
+#
+# In this file, you can use all long options that a program supports.
+# If you want to know which options a program supports, run the program
+# with the "--help" option.
+
+# The following options will be passed to all MySQL clients
+[client]
+# password       = your_password 
+port=3306
+socket="C:/xampp/mysql/mysql.sock"
+default-character-set=utf8
+
+# Here follows entries for some specific programs 
+
+# The MySQL server
+default-character-set=utf8
+[mysqld]
+port=3306
+socket="C:/xampp/mysql/mysql.sock"
+basedir="C:/xampp/mysql"
+tmpdir="C:/xampp/tmp"
+datadir="C:/xampp/mysql/data"
+pid_file="mysql.pid"
+# enable-named-pipe
+key_buffer=16M
+max_allowed_packet=1M
+sort_buffer_size=512K
+net_buffer_length=8K
+read_buffer_size=256K
+read_rnd_buffer_size=512K
+myisam_sort_buffer_size=8M
+log_error="mysql_error.log"
+
+# Change here for bind listening
+# bind-address="127.0.0.1" 
+# bind-address = ::1          # for ipv6
+
+# Where do all the plugins live
+plugin_dir="C:/xampp/mysql/lib/plugin/"
+
+# Don't listen on a TCP/IP port at all. This can be a security enhancement,
+# if all processes that need to connect to mysqld run on the same host.
+# All interaction with mysqld must be made via Unix sockets or named pipes.
+# Note that using this option without enabling named pipes on Windows
+# (via the "enable-named-pipe" option) will render mysqld useless!
+# 
+# commented in by lampp security
+#skip-networking
+#skip-federated
+
+# Replication Master Server (default)
+# binary logging is required for replication
+# log-bin deactivated by default since XAMPP 1.4.11
+#log-bin=mysql-bin
+
+# required unique id between 1 and 2^32 - 1
+# defaults to 1 if master-host is not set
+# but will not function as a master if omitted
+server-id	=1
+
+# Replication Slave (comment out master section to use this)
+#
+# To configure this host as a replication slave, you can choose between
+# two methods :
+#
+# 1) Use the CHANGE MASTER TO command (fully described in our manual) -
+#    the syntax is:
+#
+#    CHANGE MASTER TO MASTER_HOST=<host>, MASTER_PORT=<port>,
+#    MASTER_USER=<user>, MASTER_PASSWORD=<password> ;
+#
+#    where you replace <host>, <user>, <password> by quoted strings and
+#    <port> by the master's port number (3306 by default).
+#
+#    Example:
+#
+#    CHANGE MASTER TO MASTER_HOST='125.564.12.1', MASTER_PORT=3306,
+#    MASTER_USER='joe', MASTER_PASSWORD='secret';
+#
+# OR
+#
+# 2) Set the variables below. However, in case you choose this method, then
+#    start replication for the first time (even unsuccessfully, for example
+#    if you mistyped the password in master-password and the slave fails to
+#    connect), the slave will create a master.info file, and any later
+#    change in this file to the variables' values below will be ignored and
+#    overridden by the content of the master.info file, unless you shutdown
+#    the slave server, delete master.info and restart the slaver server.
+#    For that reason, you may want to leave the lines below untouched
+#    (commented) and instead use CHANGE MASTER TO (see above)
+#
+# required unique id between 2 and 2^32 - 1
+# (and different from the master)
+# defaults to 2 if master-host is set
+# but will not function as a slave if omitted
+#server-id       = 2
+#
+# The replication master for this slave - required
+#master-host     =   <hostname>
+#
+# The username the slave will use for authentication when connecting
+# to the master - required
+#master-user     =   <username>
+#
+# The password the slave will authenticate with when connecting to
+# the master - required
+#master-password =   <password>
+#
+# The port the master is listening on.
+# optional - defaults to 3306
+#master-port     =  <port>
+#
+# binary logging - not required for slaves, but recommended
+#log-bin=mysql-bin
+
+
+# Point the following paths to different dedicated disks
+#tmpdir = "C:/xampp/tmp"
+#log-update = /path-to-dedicated-directory/hostname
+
+# Uncomment the following if you are using BDB tables
+#bdb_cache_size = 4M
+#bdb_max_lock = 10000
+
+# Comment the following if you are using InnoDB tables
+#skip-innodb
+innodb_data_home_dir="C:/xampp/mysql/data"
+innodb_data_file_path=ibdata1:10M:autoextend
+innodb_log_group_home_dir="C:/xampp/mysql/data"
+#innodb_log_arch_dir = "C:/xampp/mysql/data"
+## You can set .._buffer_pool_size up to 50 - 80 %
+## of RAM but beware of setting memory usage too high
+innodb_buffer_pool_size=16M
+## Set .._log_file_size to 25 % of buffer pool size
+innodb_log_file_size=5M
+innodb_log_buffer_size=8M
+innodb_flush_log_at_trx_commit=1
+innodb_lock_wait_timeout=50
+
+## UTF 8 Settings
+init-connect=\'SET NAMES utf8\'
+collation_server=utf8_unicode_ci
+character_set_server=utf8
+skip-character-set-client-handshake
+character_sets-dir="C:/xampp/mysql/share/charsets"
+sql_mode=NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION
+log_bin_trust_function_creators=1
+
+character-set-server=utf8
+collation-server=utf8_general_ci
+[mysqldump]
+max_allowed_packet=16M
+
+[mysql]
+# Remove the next comment character if you are not familiar with SQL
+#safe-updates
+default-character-set=utf8
+
+[isamchk]
+key_buffer=20M
+sort_buffer_size=20M
+read_buffer=2M
+write_buffer=2M
+
+[myisamchk]
+key_buffer=20M
+sort_buffer_size=20M
+read_buffer=2M
+write_buffer=2M
+
+[mysqlhotcopy]
+
+
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+
+
+
+
+
+
+
+
