@@ -1,0 +1,84 @@
+갤러리
+
+1. 클래스 하나로 합치기
+2. 내가 클릭한 이전달/다음달의 년/월을 변수에 담아서 계속 알고있게끔 하기
+(그래야 연/월을 주고 받고 해서 
+내가 8월일때 이전달꺼 누르면 현재가 7월이 되고 이전달이 6월이 될 수 있음)
+3. 이전달 눌렀을때 다음달 눌렀을때의 파라미터 
+ ex) default일때 이번달 쿼리 실행
+1일때 이전달 쿼리 실행 , 2일때 다음달 쿼리 실행
+
+
+function sub(index) {
+		if (index == 1) 
+		{
+			frm.action = 'index.php';
+		}
+		if (index == 2)
+		{
+			frm.action = './join.php';
+		}
+	}
+
+
+4. 일단 submit 날리게끔 짜야함
+
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+form에서 submit 날림
+
+1. 
+이전달 / 다음달 버튼을 누르면 자바스크립트 실행 
+예를 들어서 select(index){
+index ==1 이면 이전달 -> 현재 날짜에서 1개월 뺀 것 
+ 변수 = 현재 날짜 - 1개월 이런식
+index ==2 이면 다음달 -> 현재 날짜에서 1개월 더한 것
+}
+
+이렇게 하거나
+
+2.
+
+변수 선언해서 
+$ 이전달 = 오늘 - 1개월 이런식
+$ 오늘 = 
+$ 다음달 = 
+
+이렇게 하고 
+
+이전달 / 다음달 버튼을 누르면 자바스크립트 실행
+->
+<a href="javascript:select(1);">이전달
+<a href="javascript:select(2);">다음달
+
+참고) 자바스크립트 안에 html 넣기
+https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=eunii31&logNo=80106793456
+
+function select(index) {
+document.write("
+<form method ="post" action ="select_img.class 을 해야하나 아니면 다시 main.php"
+1이면 이번달 -> <input type="hidden" name="before" value="<?echo $이전달 ?>"/>  
+2이면 다음달 -> <input type="hidden" name="next" value="<?echo $다음달 ?>"/>
+");
+
+
+그러면 class 에서는 변수 선언
+$before = _$post[$before] 이거엿나 암튼 post로 받아온 값 넣어주기
+
+
+
+
+
+*참고*
+- 폼에서 값을 숨겨 보내기 php : https://devjhs.tistory.com/528
+- php submit : https://jamong-icetea.tistory.com/32
+- php 달력 만들기 소스 : https://m.blog.naver.com/gggg4u/135362352
+- php로 달력 만들기 : https://ncube.net/php%EB%A1%9C-%EB%8B%AC%EB%A0%A5-%EB%A7%8C%EB%93%A4%EA%B8%B0/
+- php 클래스 데이터 전달하기 : https://www.everdevel.com/PHP/class-construct-parameter-argument/
+- 자바스크립트 문서에 html 삽입하기 : https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=eunii31&logNo=80106793456
+- php 함수와 객체, 클래스 : https://jeongchul.tistory.com/328
+- 자바스크립트 이용 달력 만들기 : https://euny0356.tistory.com/9
+
+
+$be_month = ;
+$ne_month = ;
