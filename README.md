@@ -47,4 +47,4 @@
 
 #### 2021 하계 현장실습 프로젝트 관련 기록 링크
 
-* 개발 블로그 : https://jeongeum1202.tistory.com/category/%ED%98%84%EC%9E%A5%EC%8B%A4%EC%8A%B5
+* 개발 블로그 : https://jeongeum1202.tistory.com/category/%ED%98%84%EC%9E%A5%EC%8B%A4%EC%8A%B5%20%F0%9F%8F%99
