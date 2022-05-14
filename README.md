@@ -40,11 +40,6 @@
 ![image](https://user-images.githubusercontent.com/77143425/142353474-fb9332fc-fc0f-428d-8fd9-f91e903a418c.png)
 
 
-### +) 추가할 사항
-- HTML, CSS, JavaScript, TypeScript 등을 학습한 후 본 프로젝트를 개선할 예정입니다.  (2022년 VER 추가 예정)
-- 완벽하지 못했던 클론 코딩을 제대로 완성 시킬 예정입니다.
-
-
 #### 2021 하계 현장실습 프로젝트 관련 기록 링크
 
-* 개발 블로그 : https://jeongeum1202.tistory.com/category/%ED%98%84%EC%9E%A5%EC%8B%A4%EC%8A%B5%20%F0%9F%8F%99
+[개발 블로그](https://jeongeum1202.tistory.com/category/%ED%98%84%EC%9E%A5%EC%8B%A4%EC%8A%B5%20%F0%9F%8F%99)
